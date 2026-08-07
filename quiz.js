@@ -2,8 +2,9 @@ let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let engine = null;
+let webllmModule = null;
 
-// Modello IA ottimizzato, ultra-leggero e veloce
+// Modello IA ottimizzato e ultra-leggero
 const selectedModel = "Gemma-2-2b-it-q4f16-1";
 
 async function generateQuiz() {
@@ -21,9 +22,14 @@ async function generateQuiz() {
     loadingBox.classList.remove('hidden');
 
     try {
-        // Inizializzazione tramite la variabile globale esposta dal bundle compilato
+        // Forza il caricamento dinamico della libreria aggirando qualsiasi problema di ordine dei file nell'HTML
+        if (!webllmModule) {
+            loadingText.innerText = "Connessione al server dei modelli in corso...";
+            webllmModule = await import("https://jsdelivr.net");
+        }
+
         if (!engine) {
-            engine = new webllm.CreateEngine();
+            engine = new webllmModule.CreateEngine();
             
             engine.setInitProgressCallback((report) => {
                 const percent = Math.round(report.progress * 100);
@@ -69,7 +75,7 @@ async function generateQuiz() {
         showQuestion();
 
     } catch (error) {
-        alert("Errore dell'IA Locale: " + error.message + "\nAssicurati che il tuo browser supporti WebGPU (usa Chrome o Edge aggiornati).");
+        alert("Errore dell'IA Locale: " + error.message + "\nAssicurati che il tuo browser supporti WebGPU (usa versioni aggiornate di Chrome o Edge su sistemi Windows/Mac dedicati).");
         console.error(error);
     } finally {
         document.getElementById('generate-btn').disabled = false;
@@ -138,7 +144,6 @@ window.checkTrueFalse = function(userChoice) {
     document.getElementById('next-btn').classList.remove('hidden');
 }
 
-// Intercettore di attivazione per il pulsante
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('generate-btn');
     if (btn) btn.addEventListener('click', generateQuiz);
