@@ -59,7 +59,6 @@
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         .hidden { display: none !important; }
         
-        /* Barra di avanzamento per il download del modello */
         .progress-container { background: #eef2f7; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
         .progress-bar-bg { width: 100%; background-color: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
         .progress-bar-fill { width: 0%; height: 100%; background-color: var(--primary); transition: width 0.3s; }
@@ -104,15 +103,12 @@
 
 <div class="container">
     <h1>🧠 NoteQuiz AI 100% Locale</h1>
-    <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sul tuo computer in modo anonimo e gratuito.</p>
+    <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sulla scheda video del tuo PC in modo anonimo e gratuito.</p>
     
-       <!-- 1. Schermata Input Testo -->
     <div id="setup-screen">
         <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <!-- Rimosso onclick, aggiunto id="generate-btn" -->
         <button id="generate-btn">Inizializza IA e Genera Quiz</button>
         
-        <!-- Stato di Caricamento Modello IA -->
         <div id="loading-box" class="progress-container hidden">
             <span id="loading-text" style="font-size: 13px; font-weight: bold; color: var(--dark);">Caricamento del motore IA...</span>
             <div class="progress-bar-bg">
@@ -121,8 +117,6 @@
         </div>
     </div>
 
-
-    <!-- 2. Schermata Svolgimento Quiz -->
     <div id="quiz-screen" class="hidden">
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
@@ -136,7 +130,6 @@
         <button id="next-btn" class="hidden" onclick="nextQuestion()">Prossima Domanda</button>
     </div>
 
-    <!-- 3. Schermata dei Risultati -->
     <div id="result-screen" class="hidden">
         <h2>🎉 Quiz Completato!</h2>
         <p class="score">Punteggio finale: <span id="final-score">0</span> / 10</p>
@@ -145,7 +138,9 @@
     </div>
 </div>
 
-<!-- LIBRERIA WEBLLM DA CDN (Moduli moderni di tipo script) -->
-<script type="module" src="quiz.js"></script>
+<!-- CARICAMENTO BUNDLE COMPILATO SENZA IMPORT (Evita qualsiasi errore CORS) -->
+<script src="https://jsdelivr.net"></script>
+<!-- Collegamento locale indipendente -->
+<script src="quiz.js"></script>
 </body>
 </html>
