@@ -106,10 +106,11 @@
     <h1>🧠 NoteQuiz AI 100% Locale</h1>
     <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sul tuo computer in modo anonimo e gratuito.</p>
     
-    <!-- 1. Schermata Input Testo -->
+       <!-- 1. Schermata Input Testo -->
     <div id="setup-screen">
         <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <button id="generate-btn" onclick="generateQuiz()">Inizializza IA e Genera Quiz</button>
+        <!-- Rimosso onclick, aggiunto id="generate-btn" -->
+        <button id="generate-btn">Inizializza IA e Genera Quiz</button>
         
         <!-- Stato di Caricamento Modello IA -->
         <div id="loading-box" class="progress-container hidden">
@@ -119,6 +120,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- 2. Schermata Svolgimento Quiz -->
     <div id="quiz-screen" class="hidden">
