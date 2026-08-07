@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - Google Gemini Free</title>
+    <title>NoteQuiz AI - 100% Locale e Gratuito</title>
     <style>
         :root {
             --primary: #4a90e2;
@@ -30,9 +30,7 @@
         }
         h1, h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
         .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
-        .api-box { background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--primary); }
-        .api-box label { font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px; }
-        .api-box input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
         textarea {
             width: 100%;
             height: 180px;
@@ -60,6 +58,11 @@
         button:hover { background-color: #357abd; }
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         .hidden { display: none !important; }
+        
+        /* Barra di avanzamento per il download del modello */
+        .progress-container { background: #eef2f7; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
+        .progress-bar-bg { width: 100%; background-color: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .progress-bar-fill { width: 0%; height: 100%; background-color: var(--primary); transition: width 0.3s; }
         
         .tf-container { display: flex; gap: 20px; justify-content: center; padding: 0; margin-top: 20px; }
         .option-btn {
@@ -95,27 +98,29 @@
         
         .score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; }
         .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
-        .loader { text-align: center; font-weight: bold; color: var(--primary); padding: 20px 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🧠 NoteQuiz AI (Gemini Free)</h1>
-    <p class="subtitle">Incolla i tuoi appunti. L'IA di Google genererà un quiz perfetto di 10 domande.</p>
+    <h1>🧠 NoteQuiz AI 100% Locale</h1>
+    <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sul tuo computer in modo anonimo e gratuito.</p>
     
+    <!-- 1. Schermata Input Testo -->
     <div id="setup-screen">
-        <div class="api-box">
-            <label for="api-key">Inserisci la tua Google Gemini API Key:</label>
-            <input type="password" id="api-key" value="AQ.Ab8RN6LSyKpyh8PNWiUSw4jGi9fWNg34JsfWsaeLfZQF49CwMg" placeholder="AIzaSy...">
-            <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">Chiave gratuita generata da Google AI Studio. Esegue tutto nel browser.</small>
-        </div>
-
         <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <button id="generate-btn" onclick="generateQuiz()">Genera Quiz con Gemini</button>
-        <div id="loading-text" class="loader hidden">⏳ Google Gemini sta analizzando i tuoi appunti... Rimani sulla pagina...</div>
+        <button id="generate-btn" onclick="generateQuiz()">Inizializza IA e Genera Quiz</button>
+        
+        <!-- Stato di Caricamento Modello IA -->
+        <div id="loading-box" class="progress-container hidden">
+            <span id="loading-text" style="font-size: 13px; font-weight: bold; color: var(--dark);">Caricamento del motore IA...</span>
+            <div class="progress-bar-bg">
+                <div id="progress-fill" class="progress-bar-fill"></div>
+            </div>
+        </div>
     </div>
 
+    <!-- 2. Schermata Svolgimento Quiz -->
     <div id="quiz-screen" class="hidden">
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
@@ -129,6 +134,7 @@
         <button id="next-btn" class="hidden" onclick="nextQuestion()">Prossima Domanda</button>
     </div>
 
+    <!-- 3. Schermata dei Risultati -->
     <div id="result-screen" class="hidden">
         <h2>🎉 Quiz Completato!</h2>
         <p class="score">Punteggio finale: <span id="final-score">0</span> / 10</p>
@@ -137,6 +143,7 @@
     </div>
 </div>
 
-<script src="quiz.js"></script>
+<!-- LIBRERIA WEBLLM DA CDN (Moduli moderni di tipo script) -->
+<script type="module" src="quiz.js"></script>
 </body>
 </html>
