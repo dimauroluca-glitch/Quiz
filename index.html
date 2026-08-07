@@ -3,42 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz - Modalità Offline Protetta</title>
+    <title>⚡ NoteQuiz Arcade ⚡</title>
     <style>
-        :root { --primary: #4a90e2; --success: #2ecc71; --danger: #e74c3c; --dark: #2c3e50; --light: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background-color: var(--light); color: var(--dark); padding: 20px; }
-        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1, h2 { text-align: center; color: var(--primary); }
-        textarea { width: 100%; height: 180px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; resize: vertical; font-size: 14px; box-sizing: border-box; font-family: monospace; }
-        button { display: block; width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; }
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --neon-blue: #38bdf8;
+            --neon-purple: #c084fc;
+            --neon-green: #4ade80;
+            --neon-red: #f87171;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(192, 132, 252, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .instructions {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 18px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid var(--neon-purple);
+            color: #cbd5e1;
+        }
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 16px;
+            background: #0f172a;
+            color: var(--text-light);
+            border: 2px solid #334155;
+            border-radius: 14px;
+            resize: none;
+            font-size: 0.95rem;
+            font-family: 'Fira Code', Menlo, Monaco, Consolas, monospace;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+        }
+        button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
+            background: linear-gradient(135deg, #0369a1 0%, #6d28d9 100%);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
         .hidden { display: none !important; }
-        .tf-container { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
-        .option-btn { flex: 1; max-width: 200px; background: var(--light); padding: 20px; font-size: 18px; font-weight: bold; text-align: center; border-radius: 8px; cursor: pointer; border: 2px solid #ddd; }
+        .progress-hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--neon-blue);
+        }
+        .progress-track {
+            flex-grow: 1;
+            height: 8px;
+            background: #334155;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+        #question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            color: var(--text-light);
+        }
+        .tf-container { display: flex; gap: 15px; margin-top: 20px; }
+        .option-btn {
+            flex: 1;
+            background: #1e293b;
+            padding: 22px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-align: center;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 2px solid #334155;
+            letter-spacing: 1px;
+        }
+        .option-btn:hover {
+            background: #334155;
+            transform: scale(1.03);
+        }
+        #btn-vero:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(74, 222, 128, 0.2); }
+        #btn-falso:hover { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
-        .option-item { background: var(--light); padding: 14px; margin: 10px 0; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; font-size: 16px; }
-        .correct { background-color: var(--success) !important; color: white !important; }
-        .wrong { background-color: var(--danger) !important; color: white !important; }
-        .score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; }
-        .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
-        .instructions { background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
+        .option-item {
+            background: #0f172a;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 2px solid #334155;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        .option-item:hover {
+            border-color: var(--neon-blue);
+            background: #1e293b;
+            transform: translateX(5px);
+        }
+        .correct { 
+            background-color: rgba(74, 222, 128, 0.15) !important; 
+            border-color: var(--neon-green) !important; 
+            color: var(--neon-green) !important;
+            font-weight: 700;
+        }
+        .wrong { 
+            background-color: rgba(248, 113, 113, 0.15) !important; 
+            border-color: var(--neon-red) !important; 
+            color: var(--neon-red) !important;
+            font-weight: 700;
+        }
+        .feedback {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 25px;
+            font-weight: 700;
+            min-height: 30px;
+            animation: popIn 0.3s ease-out;
+        }
+        #evaluation-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 25px 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>📝 NoteQuiz Offline</h1>
-    
+    <h1>⚡ NoteQuiz Arcade ⚡</h1>
+    <p class="subtitle">Incolla la risposta dell'IA, distruggi il test e sali di livello</p>
     <div id="setup-screen">
         <div class="instructions">
-            <strong>Come generare il quiz senza blocchi di rete:</strong><br>
-            1. Copia i tuoi appunti.<br>
-            2. Vai su ChatGPT/Gemini e scrivi: <i>"Genera un quiz di 10 domande (5 multiple, 5 vero/falso) basato su questi appunti. Restituisci SOLO un array JSON con chiavi: type ('multiple' o 'tf'), text, correctAnswer, choices (solo per le multiple, array di 4 opzioni) ed explanation (solo per le tf)."</i><br>
-            3. Copia il codice JSON generato dall'IA e <strong>incollalo qui sotto</strong>:
+            <strong>Genera la tua sfida:</strong><br>
+            1. Copia i tuoi appunti di qualsiasi materia o argomento.<br>
+            2. Vai sulla chat dell'IA esterna e chiedile di generare il codice <i>JSON</i>.<br>
+            3. Incolla il blocco di codice ottenuto qua sotto:
         </div>
-        <textarea id="notes-input" placeholder="Incolla qui il codice JSON generato dall'IA..."></textarea>
-        <button id="generate-btn" onclick="startOfflineQuiz()">Avvia Quiz Istantaneamente</button>
+        <textarea id="notes-input" placeholder="[ { &quot;type&quot;: &quot;multiple&quot;, ... ]"></textarea>
+        <button id="generate-btn" onclick="startOfflineQuiz()">🎮 AVVIA LA SFIDA</button>
     </div>
-
     <div id="quiz-screen" class="hidden">
+        <div class="progress-hud">
+            <span id="hud-current">STAGE 1</span>
+            <div class="progress-track">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <span id="hud-score">SCORE: 0</span>
+        </div>
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
         <div id="tf-container" class="tf-container hidden">
@@ -46,14 +250,13 @@
             <div id="btn-falso" class="option-btn" onclick="checkTrueFalse('Falso')">FALSO</div>
         </div>
         <div id="feedback-text" class="feedback"></div>
-        <button id="next-btn" class="hidden" onclick="nextQuestion()">Prossima Domanda</button>
+        <button id="next-btn" class="hidden" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
     </div>
-
     <div id="result-screen" class="hidden">
-        <h2>🎉 Quiz Completato!</h2>
-        <p class="score">Punteggio finale: <span id="final-score">0</span> / 10</p>
-        <div id="evaluation-text" style="font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0;"></div>
-        <button onclick="resetQuiz()">Fai un altro test</button>
+        <h2>🏆 CLASSIFICA FINALE 🏆</h2>
+        <p class="score" style="font-size: 1.4rem;">Punteggio Livello: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>
+        <div id="evaluation-text"></div>
+        <button onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
     </div>
 </div>
 <script src="quiz.js"></script>
