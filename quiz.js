@@ -9,8 +9,7 @@ let engine = null;
 // Scegliamo un modello IA piccolissimo ma ultra-intelligente in italiano
 const selectedModel = "Gemma-2-2b-it-q4f16-1";
 
-// Esponiamo la funzione nel raggio d'azione globale (window) altrimenti l'HTML non la vede
-window.generateQuiz = async function() {
+async function generateQuiz() {
     const text = document.getElementById('notes-input').value.trim();
 
     if (!text || text.length < 15) {
@@ -61,10 +60,10 @@ window.generateQuiz = async function() {
         const reply = await engine.chat.completions.create({
             messages: messages,
             temperature: 0.3,
-            response_format: { type: "json_object" } // Obbliga l'IA locale a produrre codice JSON pulito
+            response_format: { type: "json_object" }
         });
 
-        const jsonText = reply.choices[0].message.content.trim();
+        const jsonText = reply.choices.message.content.trim();
         questions = JSON.parse(jsonText);
 
         currentQuestionIndex = 0;
@@ -143,6 +142,12 @@ window.checkTrueFalse = function(userChoice) {
 
     document.getElementById('next-btn').classList.remove('hidden');
 }
+
+// Collega il pulsante HTML direttamente dentro il modulo JS
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('generate-btn');
+    if (btn) btn.addEventListener('click', generateQuiz);
+});
 window.checkMultipleAnswer = function(selectedLi, selectedOption, correctOption) {
     const options = document.querySelectorAll('.option-item');
     options.forEach(li => li.style.pointerEvents = 'none');
