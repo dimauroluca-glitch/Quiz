@@ -2,65 +2,24 @@ let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const savedKey = localStorage.getItem('gemini_api_key');
-    if (savedKey) {
-        document.getElementById('api-key').value = savedKey;
-    }
-    
-    const btn = document.getElementById('generate-btn');
-    if (btn) btn.addEventListener('click', generateQuiz);
-});
-
-async function generateQuiz() {
-    const text = document.getElementById('notes-input').value.trim();
-    const apiKey = document.getElementById('api-key').value.trim();
-
-    if (!apiKey) {
-        alert("Per favore, inserisci la tua Gemini API Key!");
+function startOfflineQuiz() {
+    let rawText = document.getElementById('notes-input').value.trim();
+    if (!rawText) {
+        alert("Incolla il codice JSON generato dall'IA per continuare!");
         return;
     }
-    if (!text || text.length < 15) {
-        alert("Inserisci un testo più lungo per generare il quiz.");
-        return;
-    }
-
-    localStorage.setItem('gemini_api_key', apiKey);
-
-    document.getElementById('generate-btn').disabled = true;
-    document.getElementById('loading-text').classList.remove('hidden');
-
-    const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
-    Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
-    Le risposte errate delle scelte multiple devono essere verosimili e intelligenti. Le domande vero o falso devono essere chiare.
-    Restituisci esplicitamente ed ESCLUSIVAMENTE un array JSON (senza racchiuderlo in blocchi di codice markdown \`\`\`json) contenente oggetti strutturati così:
-    [
-      { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
-      { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
-    ]
-    Ecco gli appunti: ${text}`;
 
     try {
-        // Chiamata REST nativa protetta adatta per l'HTML classico
-        const response = await fetch(`https://googleapis.com{apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseMimeType: "application/json"
-                }
-            })
-        });
-
-        const data = await response.json();
-        
-        if (data.error) {
-            throw new Error(data.error.message);
+        // Pulisce eventuali formattazioni di testo dell'IA (es. ```json ... ```)
+        if (rawText.startsWith('```')) {
+            rawText = rawText.replace(/^```[a-z]*/i, '').replace(/```$/, '');
         }
 
-        const jsonText = data.candidates[0].content.parts[0].text.trim();
-        questions = JSON.parse(jsonText);
+        questions = JSON.parse(rawText.trim());
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+            throw new Error("Il testo inserito non è un elenco di domande valido.");
+        }
 
         currentQuestionIndex = 0;
         score = 0;
@@ -69,12 +28,8 @@ async function generateQuiz() {
         document.getElementById('quiz-screen').classList.remove('hidden');
         showQuestion();
 
-    } catch (error) {
-        alert("Errore Generazione Quiz: " + error.message);
-        console.error(error);
-    } finally {
-        document.getElementById('generate-btn').disabled = false;
-        document.getElementById('loading-text').classList.add('hidden');
+    } catch (e) {
+        alert("Errore nel formato del testo: assicurati di aver copiato l'intero codice JSON dall'IA. Dettaglio: " + e.message);
     }
 }
 
@@ -89,7 +44,7 @@ function showQuestion() {
     optionsContainer.innerHTML = '';
     tfContainer.classList.add('hidden');
     
-    document.getElementById('question-text').innerHTML = `<small style="color:var(--primary); display:block; font-size:14px; margin-bottom:10px;">Domanda ${currentQuestionIndex + 1} di 10</small>${currentQuestion.text}`;
+    document.getElementById('question-text').innerHTML = `<small style="color:var(--primary); display:block; font-size:14px; margin-bottom:10px;">Domanda ${currentQuestionIndex + 1} di ${questions.length}</small>${currentQuestion.text}`;
 
     if (currentQuestion.type === 'tf') {
         tfContainer.classList.remove('hidden');
@@ -119,7 +74,7 @@ window.checkTrueFalse = function(userChoice) {
     btnVero.style.pointerEvents = 'none';
     btnFalso.style.pointerEvents = 'none';
 
-    const isCorrect = userChoice === currentQuestion.correctAnswer;
+    const isCorrect = userChoice.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
 
     if (userChoice === 'Vero') {
         btnVero.classList.add(isCorrect ? 'correct' : 'wrong');
@@ -164,18 +119,19 @@ window.checkMultipleAnswer = function(selectedLi, selectedOption, correctOption)
 
 window.nextQuestion = function() {
     currentQuestionIndex++;
-    if (currentQuestionIndex < 10) {
+    if (currentQuestionIndex < questions.length) {
         showQuestion();
     } else {
         showResults();
     }
 }
 
-function getEvaluation(finalScore) {
-    if (finalScore === 10) return { text: "Eccellente! 🌟 Preparazione impeccabile!", color: "#2ecc71" };
-    if (finalScore >= 8) return { text: "Ottimo! 👏 Sei decisamente pronto.", color: "#2ecc71" };
-    if (finalScore >= 6) return { text: "Sufficiente! 👍 Hai superato il test, ma rileggi i dettagli.", color: "#f39c12" };
-    if (finalScore >= 4) return { text: "Insufficiente! 📚 Devi studiare ancora un po'.", color: "#e74c3c" };
+function getEvaluation(finalScore, total) {
+    const percent = (finalScore / total) * 100;
+    if (percent === 100) return { text: "Eccellente! 🌟 Preparazione impeccabile!", color: "#2ecc71" };
+    if (percent >= 80) return { text: "Ottimo! 👏 Sei decisamente pronto.", color: "#2ecc71" };
+    if (percent >= 60) return { text: "Sufficiente! 👍 Hai superato il test, ma rileggi i dettagli.", color: "#f39c12" };
+    if (percent >= 40) return { text: "Insufficiente! 📚 Devi studiare ancora un po'.", color: "#e74c3c" };
     return { text: "Gravemente Insufficiente! ❌ Torna a leggere gli appunti.", color: "#c0392b" };
 }
 
@@ -184,7 +140,10 @@ function showResults() {
     document.getElementById('result-screen').classList.remove('hidden');
     document.getElementById('final-score').innerText = score;
     
-    const evaluation = getEvaluation(score);
+    // Aggiornato per leggere dinamicamente la lunghezza totale del JSON incollato
+    document.querySelector('#result-screen .score').innerHTML = `Punteggio finale: <span id="final-score">${score}</span> / ${questions.length}`;
+    
+    const evaluation = getEvaluation(score, questions.length);
     const targetEl = document.getElementById('evaluation-text');
     targetEl.innerText = evaluation.text;
     targetEl.style.color = evaluation.color;
