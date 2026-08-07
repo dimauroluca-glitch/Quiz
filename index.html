@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - 100% Locale e Gratuito</title>
+    <title>NoteQuiz AI - Google SDK</title>
     <style>
         :root {
             --primary: #4a90e2;
@@ -30,7 +30,9 @@
         }
         h1, h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
         .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
-        
+        .api-box { background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--primary); }
+        .api-box label { font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px; }
+        .api-box input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         textarea {
             width: 100%;
             height: 180px;
@@ -58,10 +60,6 @@
         button:hover { background-color: #357abd; }
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         .hidden { display: none !important; }
-        
-        .progress-container { background: #eef2f7; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
-        .progress-bar-bg { width: 100%; background-color: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
-        .progress-bar-fill { width: 0%; height: 100%; background-color: var(--primary); transition: width 0.3s; }
         
         .tf-container { display: flex; gap: 20px; justify-content: center; padding: 0; margin-top: 20px; }
         .option-btn {
@@ -97,24 +95,34 @@
         
         .score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; }
         .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
+        .loader { text-align: center; font-weight: bold; color: var(--primary); padding: 20px 0; }
     </style>
+    
+    <!-- Configurazione per caricare l'SDK ufficiale di Google AI senza errori di importazione -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run"
+        }
+      }
+    </script>
 </head>
 <body>
 
 <div class="container">
-    <h1>🧠 NoteQuiz AI 100% Locale</h1>
-    <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sulla scheda video del tuo PC in modo anonimo e gratuito.</p>
+    <h1>🧠 NoteQuiz AI (Official Google SDK)</h1>
+    <p class="subtitle">Incolla i tuoi appunti. L'SDK ufficiale di Google genererà un quiz perfetto di 10 domande.</p>
     
     <div id="setup-screen">
-        <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <button id="generate-btn">Inizializza IA e Genera Quiz</button>
-        
-        <div id="loading-box" class="progress-container hidden">
-            <span id="loading-text" style="font-size: 13px; font-weight: bold; color: var(--dark);">Caricamento del motore IA...</span>
-            <div class="progress-bar-bg">
-                <div id="progress-fill" class="progress-bar-fill"></div>
-            </div>
+        <div class="api-box">
+            <label for="api-key">Inserisci la tua Google Gemini API Key:</label>
+            <input type="password" id="api-key" placeholder="AIzaSy...">
+            <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">La chiave viene salvata al sicuro solo nel browser locale.</small>
         </div>
+
+        <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
+        <button id="generate-btn">Genera Quiz con Gemini</button>
+        <div id="loading-text" class="loader hidden">⏳ Google Gemini sta analizzando i tuoi appunti tramite connessione protetta...</div>
     </div>
 
     <div id="quiz-screen" class="hidden">
@@ -138,7 +146,7 @@
     </div>
 </div>
 
-<!-- Caricamento tramite modulo diretto, che garantisce l'isolamento ed evita l'errore d'inizializzazione -->
+<!-- Impostiamo lo script come modulo per permettere l'uso dell'SDK Google -->
 <script type="module" src="quiz.js"></script>
 </body>
 </html>
