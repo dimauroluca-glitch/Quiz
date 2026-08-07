@@ -1,14 +1,10 @@
-// MODIFICATO: Utilizzo dell'URL statico e diretto per evitare il blocco CORS del reindirizzamento
-import * as webllm from "https://jsdelivr.net";
-
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let engine = null;
 
-// Scegliamo un modello IA piccolissimo ma ultra-intelligente in italiano
+// Modello IA ottimizzato, ultra-leggero e veloce
 const selectedModel = "Gemma-2-2b-it-q4f16-1";
-
 
 async function generateQuiz() {
     const text = document.getElementById('notes-input').value.trim();
@@ -25,11 +21,10 @@ async function generateQuiz() {
     loadingBox.classList.remove('hidden');
 
     try {
-        // Se l'IA locale non è ancora stata creata, la inizializziamo
+        // Inizializzazione tramite la variabile globale esposta dal bundle compilato
         if (!engine) {
             engine = new webllm.CreateEngine();
             
-            // Monitora lo scaricamento del modello sul browser dell'utente
             engine.setInitProgressCallback((report) => {
                 const percent = Math.round(report.progress * 100);
                 loadingText.innerText = `Fase: ${report.text} (${percent}%)`;
@@ -57,7 +52,6 @@ async function generateQuiz() {
             { role: "user", content: prompt }
         ];
 
-        // Richiesta di generazione dei contenuti all'IA della tua scheda video
         const reply = await engine.chat.completions.create({
             messages: messages,
             temperature: 0.3,
@@ -144,7 +138,7 @@ window.checkTrueFalse = function(userChoice) {
     document.getElementById('next-btn').classList.remove('hidden');
 }
 
-// Collega il pulsante HTML direttamente dentro il modulo JS
+// Intercettore di attivazione per il pulsante
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('generate-btn');
     if (btn) btn.addEventListener('click', generateQuiz);
