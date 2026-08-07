@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - Google SDK</title>
+    <title>NoteQuiz AI - Google SDK Stabile</title>
     <style>
         :root {
             --primary: #4a90e2;
@@ -97,15 +97,9 @@
         .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
         .loader { text-align: center; font-weight: bold; color: var(--primary); padding: 20px 0; }
     </style>
-    
-    <!-- Configurazione per caricare l'SDK ufficiale di Google AI senza errori di importazione -->
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/generative-ai": "https://esm.run"
-        }
-      }
-    </script>
+
+    <!-- CARICAMENTO SDK GOOGLE AI IN VERSIONE BUNDLE (Zero errori CORS o moduli bloccati) -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
@@ -146,7 +140,7 @@
     </div>
 </div>
 
-<!-- Impostiamo lo script come modulo per permettere l'uso dell'SDK Google -->
-<script type="module" src="quiz.js"></script>
+<!-- Normale inclusione script locale senza attributo type="module" -->
+<script src="quiz.js"></script>
 </body>
 </html>
