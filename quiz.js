@@ -1,5 +1,5 @@
-// Importiamo WebLLM direttamente dai server ufficiali
-import * as webllm from "https://esm.run";
+// MODIFICATO: Utilizzo dell'URL statico e diretto per evitare il blocco CORS del reindirizzamento
+import * as webllm from "https://jsdelivr.net";
 
 let questions = [];
 let currentQuestionIndex = 0;
@@ -8,6 +8,7 @@ let engine = null;
 
 // Scegliamo un modello IA piccolissimo ma ultra-intelligente in italiano
 const selectedModel = "Gemma-2-2b-it-q4f16-1";
+
 
 async function generateQuiz() {
     const text = document.getElementById('notes-input').value.trim();
