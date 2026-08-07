@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - Google SDK Stabile</title>
+    <title>NoteQuiz AI - Connessione Diretta</title>
     <style>
         :root {
             --primary: #4a90e2;
@@ -97,26 +97,23 @@
         .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
         .loader { text-align: center; font-weight: bold; color: var(--primary); padding: 20px 0; }
     </style>
-
-    <!-- CARICAMENTO SDK GOOGLE AI IN VERSIONE BUNDLE (Zero errori CORS o moduli bloccati) -->
-    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
 <div class="container">
-    <h1>🧠 NoteQuiz AI (Official Google SDK)</h1>
-    <p class="subtitle">Incolla i tuoi appunti. L'SDK ufficiale di Google genererà un quiz perfetto di 10 domande.</p>
+    <h1>🧠 NoteQuiz AI</h1>
+    <p class="subtitle">Incolla i tuoi appunti e genera un quiz perfetto di 10 domande senza errori.</p>
     
     <div id="setup-screen">
         <div class="api-box">
             <label for="api-key">Inserisci la tua Google Gemini API Key:</label>
             <input type="password" id="api-key" placeholder="AIzaSy...">
-            <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">La chiave viene salvata al sicuro solo nel browser locale.</small>
+            <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">La chiave viene memorizzata in locale solo sul tuo browser.</small>
         </div>
 
         <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
         <button id="generate-btn">Genera Quiz con Gemini</button>
-        <div id="loading-text" class="loader hidden">⏳ Google Gemini sta analizzando i tuoi appunti tramite connessione protetta...</div>
+        <div id="loading-text" class="loader hidden">⏳ L'IA sta leggendo i tuoi appunti... Rimani sulla pagina...</div>
     </div>
 
     <div id="quiz-screen" class="hidden">
@@ -140,7 +137,7 @@
     </div>
 </div>
 
-<!-- Normale inclusione script locale senza attributo type="module" -->
+<!-- Struttura base pulita senza caricamenti esterni o moduli -->
 <script src="quiz.js"></script>
 </body>
 </html>
