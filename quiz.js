@@ -33,7 +33,7 @@ async function generateQuiz() {
     const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
     Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
     Le risposte errate delle scelte multiple devono essere verosimili e intelligenti. Le domande vero o falso devono essere chiare.
-    Restituisci esplicitamente ed ESCLUSIVAMENTE un array JSON (senza formattazione markdown \`\`\`json) contenente oggetti con questa esatta struttura:
+    Restituisci esplicitamente ed ESCLUSIVAMENTE un array JSON (senza racchiuderlo in blocchi di codice markdown \`\`\`json) contenente oggetti strutturati così:
     [
       { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
       { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
@@ -41,20 +41,25 @@ async function generateQuiz() {
     Ecco gli appunti: ${text}`;
 
     try {
-        // Inizializza l'SDK sfruttando l'oggetto globale inserito nell'HTML (senza alcun import)
-        const GoogleGenAI = window.googleGenAI.GoogleGenAI;
-        const ai = new GoogleGenAI({ apiKey: apiKey });
-        
-        // Utilizziamo il modello stabile gemini-2.5-flash
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json"
-            }
+        // Chiamata REST nativa protetta adatta per l'HTML classico
+        const response = await fetch(`https://googleapis.com{apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            })
         });
 
-        const jsonText = response.text.trim();
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
+        const jsonText = data.candidates[0].content.parts[0].text.trim();
         questions = JSON.parse(jsonText);
 
         currentQuestionIndex = 0;
@@ -65,7 +70,7 @@ async function generateQuiz() {
         showQuestion();
 
     } catch (error) {
-        alert("Errore SDK Gemini: " + error.message);
+        alert("Errore Generazione Quiz: " + error.message);
         console.error(error);
     } finally {
         document.getElementById('generate-btn').disabled = false;
