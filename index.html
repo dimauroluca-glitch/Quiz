@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⚡ NoteQuiz Arcade ⚡</title>
     <style>
         :root {
@@ -15,33 +15,38 @@
             --text-light: #f8fafc;
             --text-muted: #94a3b8;
         }
+
         * {
             box-sizing: border-box;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-light);
             margin: 0;
-            padding: 20px;
+            padding: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             background-image: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
         }
+
         .container {
             width: 100%;
             max-width: 650px;
             background: var(--card-bg);
-            padding: 35px;
+            padding: 25px;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(192, 132, 252, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
         }
+
         .container::before {
             content: '';
             position: absolute;
@@ -51,6 +56,7 @@
             height: 5px;
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
         }
+
         h1 {
             text-align: center;
             font-size: 2.2rem;
@@ -59,44 +65,67 @@
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-top: 0;
+            margin-top: 10px;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
         }
+
         .subtitle {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-size: 0.95rem;
         }
-        .instructions {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 18px;
+
+        .copy-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px dashed var(--neon-blue);
+            padding: 15px;
             border-radius: 14px;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            border-left: 4px solid var(--neon-purple);
-            color: #cbd5e1;
+            margin-bottom: 20px;
+            text-align: center;
         }
+
+        .copy-btn {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: auto;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .copy-btn:hover {
+            background: #7dd3fc;
+            transform: translateY(-1px);
+        }
+
         textarea {
             width: 100%;
-            height: 160px;
+            height: 150px;
             padding: 16px;
             background: #0f172a;
             color: var(--text-light);
             border: 2px solid #334155;
             border-radius: 14px;
             resize: none;
-            font-size: 0.95rem;
-            font-family: 'Fira Code', Menlo, Monaco, Consolas, monospace;
+            font-size: 1rem;
+            font-family: monospace;
         }
+
         textarea:focus {
             outline: none;
             border-color: var(--neon-purple);
             box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
         }
-        button {
+
+        .action-btn {
             display: block;
             width: 100%;
             background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%);
@@ -110,15 +139,15 @@
             margin-top: 20px;
             box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
         }
-        button:hover {
+
+        .action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
             background: linear-gradient(135deg, #0369a1 0%, #6d28d9 100%);
         }
-        button:active {
-            transform: translateY(1px);
-        }
+
         .hidden { display: none !important; }
+
         .progress-hud {
             display: flex;
             align-items: center;
@@ -131,6 +160,7 @@
             font-weight: 600;
             color: var(--neon-blue);
         }
+
         .progress-track {
             flex-grow: 1;
             height: 8px;
@@ -139,12 +169,14 @@
             margin: 0 15px;
             overflow: hidden;
         }
+
         .progress-fill {
             width: 0%;
             height: 100%;
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
             border-radius: 10px;
         }
+
         #question-text {
             font-size: 1.3rem;
             font-weight: 700;
@@ -152,26 +184,28 @@
             margin-bottom: 25px;
             color: var(--text-light);
         }
+
         .tf-container { display: flex; gap: 15px; margin-top: 20px; }
+        
         .option-btn {
             flex: 1;
             background: #1e293b;
-            padding: 22px;
+            padding: 20px;
             font-size: 1.2rem;
             font-weight: 800;
             text-align: center;
             border-radius: 16px;
             cursor: pointer;
             border: 2px solid #334155;
-            letter-spacing: 1px;
+            touch-action: manipulation;
         }
-        .option-btn:hover {
-            background: #334155;
-            transform: scale(1.03);
-        }
-        #btn-vero:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(74, 222, 128, 0.2); }
-        #btn-falso:hover { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
+
+        .option-btn:hover { background: #334155; transform: scale(1.02); }
+        #btn-vero:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        #btn-falso:hover { border-color: var(--neon-red); color: var(--neon-red); }
+
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
+        
         .option-item {
             background: #0f172a;
             padding: 16px 20px;
@@ -181,60 +215,56 @@
             border: 2px solid #334155;
             font-size: 1.05rem;
             font-weight: 600;
+            touch-action: manipulation;
         }
+
         .option-item:hover {
             border-color: var(--neon-blue);
             background: #1e293b;
-            transform: translateX(5px);
+            transform: translateX(3px);
         }
-        .correct { 
-            background-color: rgba(74, 222, 128, 0.15) !important; 
-            border-color: var(--neon-green) !important; 
-            color: var(--neon-green) !important;
-            font-weight: 700;
-        }
-        .wrong { 
-            background-color: rgba(248, 113, 113, 0.15) !important; 
-            border-color: var(--neon-red) !important; 
-            color: var(--neon-red) !important;
-            font-weight: 700;
-        }
-        .feedback {
-            text-align: center;
-            font-size: 1.1rem;
-            margin-top: 25px;
-            font-weight: 700;
-            min-height: 30px;
-            animation: popIn 0.3s ease-out;
-        }
-        #evaluation-text {
-            font-size: 1.6rem;
-            font-weight: 800;
-            text-align: center;
-            margin: 25px 0;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+
+        .correct { background-color: rgba(74, 222, 128, 0.15) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
+        .wrong { background-color: rgba(248, 113, 113, 0.15) !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
+
+        .feedback { text-align: center; font-size: 1.1rem; margin-top: 25px; font-weight: 700; min-height: 30px; }
+        #evaluation-text { font-size: 1.6rem; font-weight: 800; text-align: center; margin: 25px 0; text-transform: uppercase; }
+
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .container { padding: 20px 15px; border-radius: 16px; }
+            h1 { font-size: 1.7rem; }
+            .subtitle { font-size: 0.85rem; margin-bottom: 20px; }
+            .copy-box { padding: 12px; font-size: 0.8rem; }
+            .progress-hud { font-size: 0.75rem; padding: 8px 12px; margin-bottom: 15px; }
+            .progress-track { margin: 0 8px; height: 6px; }
+            #question-text { font-size: 1.1rem; margin-bottom: 15px; }
+            .option-btn { padding: 15px; font-size: 1rem; border-radius: 12px; }
+            .option-item { padding: 12px 14px; margin: 8px 0; font-size: 0.95rem; border-radius: 10px; }
+            .feedback { font-size: 0.95rem; margin-top: 15px; }
+            #evaluation-text { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>⚡ NoteQuiz Arcade ⚡</h1>
-    <p class="subtitle">Incolla la risposta dell'IA, distruggi il test e sali di livello</p>
+    <p class="subtitle">Incolla le domande dell'IA, supera il test e fai level up</p>
+    
+    <!-- 1. Schermata Setup -->
     <div id="setup-screen">
-        <div class="instructions">
-            <strong>Genera la tua sfida:</strong><br>
-            1. Copia i tuoi appunti di qualsiasi materia o argomento.<br>
-            2. Vai sulla chat dell'IA esterna e chiedile di generare il codice <i>JSON</i>.<br>
-            3. Incolla il blocco di codice ottenuto qua sotto:
+        <div class="copy-box">
+            <span style="font-weight: 600; font-size: 0.85rem; display: block; color: var(--neon-purple); margin-bottom: 5px;">🤖 FASE 1: GENERA LE DOMANDE</span>
+            <span style="font-size: 0.85rem; color: #cbd5e1; display: block; margin-bottom: 8px;">Clicca il pulsante sotto, incollalo su ChatGPT/Gemini insieme ai tuoi appunti.</span>
+            <button class="copy-btn" onclick="copyPromptToClipboard()">📋 COPIA COMANDO PER L'IA</button>
         </div>
-        <textarea id="notes-input" placeholder="[ { &quot;type&quot;: &quot;multiple&quot;, ... ]"></textarea>
-        <button id="generate-btn" onclick="startOfflineQuiz()">🎮 AVVIA LA SFIDA</button>
+
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--neon-blue); margin-bottom: 5px; text-transform: uppercase;">🎮 FASE 2: INCOLLA IL CODICE OTTENUTO</div>
+        <textarea id="notes-input" placeholder="Incolla qui il blocco di codice JSON generato dall'IA..."></textarea>
+        <button class="action-btn" onclick="startOfflineQuiz()">🎮 AVVIA LA SFIDA</button>
     </div>
+
+    <!-- 2. Schermata Quiz -->
     <div id="quiz-screen" class="hidden">
         <div class="progress-hud">
             <span id="hud-current">STAGE 1</span>
@@ -243,22 +273,28 @@
             </div>
             <span id="hud-score">SCORE: 0</span>
         </div>
+
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
+        
         <div id="tf-container" class="tf-container hidden">
             <div id="btn-vero" class="option-btn" onclick="checkTrueFalse('Vero')">VERO</div>
             <div id="btn-falso" class="option-btn" onclick="checkTrueFalse('Falso')">FALSO</div>
         </div>
+        
         <div id="feedback-text" class="feedback"></div>
-        <button id="next-btn" class="hidden" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
+        <button id="next-btn" class="hidden action-btn" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
     </div>
+
+    <!-- 3. Schermata Risultati -->
     <div id="result-screen" class="hidden">
         <h2>🏆 CLASSIFICA FINALE 🏆</h2>
-        <p class="score" style="font-size: 1.4rem;">Punteggio Livello: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>
+        <p class="score" style="text-align: center; font-size: 1.3rem;">Punteggio Finale: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>
         <div id="evaluation-text"></div>
-        <button onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
+        <button class="action-btn" onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
     </div>
 </div>
+
 <script src="quiz.js"></script>
 </body>
 </html>
