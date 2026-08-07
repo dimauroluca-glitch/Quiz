@@ -3,128 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - Connessione Diretta</title>
+    <title>NoteQuiz - Modalità Offline Protetta</title>
     <style>
-        :root {
-            --primary: #4a90e2;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: var(--light);
-            color: var(--dark);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        h1, h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
-        .api-box { background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--primary); }
-        .api-box label { font-weight: bold; font-size: 13px; display: block; margin-bottom: 5px; }
-        .api-box input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        textarea {
-            width: 100%;
-            height: 180px;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        button {
-            display: block;
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: #357abd; }
-        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        :root { --primary: #4a90e2; --success: #2ecc71; --danger: #e74c3c; --dark: #2c3e50; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background-color: var(--light); color: var(--dark); padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: var(--primary); }
+        textarea { width: 100%; height: 180px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; resize: vertical; font-size: 14px; box-sizing: border-box; font-family: monospace; }
+        button { display: block; width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; }
         .hidden { display: none !important; }
-        
-        .tf-container { display: flex; gap: 20px; justify-content: center; padding: 0; margin-top: 20px; }
-        .option-btn {
-            flex: 1;
-            max-width: 200px;
-            background: var(--light);
-            padding: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid #ddd;
-            transition: all 0.2s;
-        }
-        .option-btn:hover { background: #edf2f7; border-color: var(--primary); }
-        
+        .tf-container { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+        .option-btn { flex: 1; max-width: 200px; background: var(--light); padding: 20px; font-size: 18px; font-weight: bold; text-align: center; border-radius: 8px; cursor: pointer; border: 2px solid #ddd; }
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
-        .option-item {
-            background: var(--light);
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            transition: all 0.2s;
-            font-size: 16px;
-        }
-        .option-item:hover { background: #edf2f7; border-color: var(--primary); }
-        
-        .correct { background-color: var(--success) !important; color: white !important; border-color: var(--success) !important; }
-        .wrong { background-color: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
-        
+        .option-item { background: var(--light); padding: 14px; margin: 10px 0; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; font-size: 16px; }
+        .correct { background-color: var(--success) !important; color: white !important; }
+        .wrong { background-color: var(--danger) !important; color: white !important; }
         .score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; }
         .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
-        .loader { text-align: center; font-weight: bold; color: var(--primary); padding: 20px 0; }
+        .instructions { background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>🧠 NoteQuiz AI</h1>
-    <p class="subtitle">Incolla i tuoi appunti e genera un quiz perfetto di 10 domande senza errori.</p>
+    <h1>📝 NoteQuiz Offline</h1>
     
     <div id="setup-screen">
-        <div class="api-box">
-            <label for="api-key">Inserisci la tua Google Gemini API Key:</label>
-            <input type="password" id="api-key" placeholder="AIzaSy...">
-            <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">La chiave viene memorizzata in locale solo sul tuo browser.</small>
+        <div class="instructions">
+            <strong>Come generare il quiz senza blocchi di rete:</strong><br>
+            1. Copia i tuoi appunti.<br>
+            2. Vai su ChatGPT/Gemini e scrivi: <i>"Genera un quiz di 10 domande (5 multiple, 5 vero/falso) basato su questi appunti. Restituisci SOLO un array JSON con chiavi: type ('multiple' o 'tf'), text, correctAnswer, choices (solo per le multiple, array di 4 opzioni) ed explanation (solo per le tf)."</i><br>
+            3. Copia il codice JSON generato dall'IA e <strong>incollalo qui sotto</strong>:
         </div>
-
-        <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <button id="generate-btn">Genera Quiz con Gemini</button>
-        <div id="loading-text" class="loader hidden">⏳ L'IA sta leggendo i tuoi appunti... Rimani sulla pagina...</div>
+        <textarea id="notes-input" placeholder="Incolla qui il codice JSON generato dall'IA..."></textarea>
+        <button id="generate-btn" onclick="startOfflineQuiz()">Avvia Quiz Istantaneamente</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
-        
         <div id="tf-container" class="tf-container hidden">
             <div id="btn-vero" class="option-btn" onclick="checkTrueFalse('Vero')">VERO</div>
             <div id="btn-falso" class="option-btn" onclick="checkTrueFalse('Falso')">FALSO</div>
         </div>
-        
         <div id="feedback-text" class="feedback"></div>
         <button id="next-btn" class="hidden" onclick="nextQuestion()">Prossima Domanda</button>
     </div>
@@ -133,11 +53,9 @@
         <h2>🎉 Quiz Completato!</h2>
         <p class="score">Punteggio finale: <span id="final-score">0</span> / 10</p>
         <div id="evaluation-text" style="font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0;"></div>
-        <button onclick="resetQuiz()">Inizia un altro quiz</button>
+        <button onclick="resetQuiz()">Fai un altro test</button>
     </div>
 </div>
-
-<!-- Struttura base pulita senza caricamenti esterni o moduli -->
 <script src="quiz.js"></script>
 </body>
 </html>
