@@ -1,70 +1,61 @@
+import { GoogleGenAI } from '@google/generative-ai';
+
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-let engine = null;
-let webllmModule = null;
 
-// Modello IA ottimizzato e ultra-leggero
-const selectedModel = "Gemma-2-2b-it-q4f16-1";
+document.addEventListener('DOMContentLoaded', () => {
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) {
+        document.getElementById('api-key').value = savedKey;
+    }
+    
+    const btn = document.getElementById('generate-btn');
+    if (btn) btn.addEventListener('click', generateQuiz);
+});
 
 async function generateQuiz() {
     const text = document.getElementById('notes-input').value.trim();
+    const apiKey = document.getElementById('api-key').value.trim();
 
+    if (!apiKey) {
+        alert("Per favore, inserisci la tua Gemini API Key!");
+        return;
+    }
     if (!text || text.length < 15) {
         alert("Inserisci un testo più lungo per generare il quiz.");
         return;
     }
 
+    localStorage.setItem('gemini_api_key', apiKey);
+
     document.getElementById('generate-btn').disabled = true;
-    const loadingBox = document.getElementById('loading-box');
-    const loadingText = document.getElementById('loading-text');
-    const progressFill = document.getElementById('progress-fill');
-    loadingBox.classList.remove('hidden');
+    document.getElementById('loading-text').classList.remove('hidden');
+
+    const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
+    Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
+    Le risposte errate delle scelte multiple devono essere verosimili e intelligenti. Le domande vero o falso devono essere chiare.
+    Restituisci esplicitamente ed ESCLUSIVAMENTE un array JSON (senza formattazione markdown \`\`\`json) contenente oggetti con questa esatta struttura:
+    [
+      { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
+      { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
+    ]
+    Ecco gli appunti: ${text}`;
 
     try {
-        // Forza il caricamento dinamico della libreria aggirando qualsiasi problema di ordine dei file nell'HTML
-        if (!webllmModule) {
-            loadingText.innerText = "Connessione al server dei modelli in corso...";
-            webllmModule = await import("https://jsdelivr.net");
-        }
-
-        if (!engine) {
-            engine = new webllmModule.CreateEngine();
-            
-            engine.setInitProgressCallback((report) => {
-                const percent = Math.round(report.progress * 100);
-                loadingText.innerText = `Fase: ${report.text} (${percent}%)`;
-                progressFill.style.width = `${percent}%`;
-            });
-
-            await engine.reload(selectedModel);
-        }
-
-        loadingText.innerText = "🧠 L'IA locale sta elaborando le domande dai tuoi appunti...";
-        progressFill.style.width = "100%";
-
-        const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
-        Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
-        Restituisci ESCLUSIVAMENTE un array JSON puro, senza alcun testo aggiuntivo e senza formattazione markdown.
-        Usa questa esatta struttura:
-        [
-          { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
-          { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
-        ]
-        Ecco gli appunti: ${text}`;
-
-        const messages = [
-            { role: "system", content: "Sei un generatore di quiz rigido. Rispondi solo in formato JSON, senza fare introduzioni o commenti." },
-            { role: "user", content: prompt }
-        ];
-
-        const reply = await engine.chat.completions.create({
-            messages: messages,
-            temperature: 0.3,
-            response_format: { type: "json_object" }
+        // Inizializza l'SDK ufficiale di Google
+        const ai = new GoogleGenAI({ apiKey: apiKey });
+        
+        // Utilizziamo il modello stabile gemini-2.5-flash
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json" // Forza la struttura JSON esatta
+            }
         });
 
-        const jsonText = reply.choices.message.content.trim();
+        const jsonText = response.text.trim();
         questions = JSON.parse(jsonText);
 
         currentQuestionIndex = 0;
@@ -75,11 +66,11 @@ async function generateQuiz() {
         showQuestion();
 
     } catch (error) {
-        alert("Errore dell'IA Locale: " + error.message + "\nAssicurati che il tuo browser supporti WebGPU (usa versioni aggiornate di Chrome o Edge su sistemi Windows/Mac dedicati).");
+        alert("Errore SDK Gemini: " + error.message);
         console.error(error);
     } finally {
         document.getElementById('generate-btn').disabled = false;
-        loadingBox.classList.add('hidden');
+        document.getElementById('loading-text').classList.add('hidden');
     }
 }
 
@@ -143,11 +134,6 @@ window.checkTrueFalse = function(userChoice) {
 
     document.getElementById('next-btn').classList.remove('hidden');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('generate-btn');
-    if (btn) btn.addEventListener('click', generateQuiz);
-});
 window.checkMultipleAnswer = function(selectedLi, selectedOption, correctOption) {
     const options = document.querySelectorAll('.option-item');
     options.forEach(li => li.style.pointerEvents = 'none');
