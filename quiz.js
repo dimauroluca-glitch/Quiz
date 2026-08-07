@@ -1,54 +1,70 @@
+// Importiamo WebLLM direttamente dai server ufficiali
+import * as webllm from "https://esm.run";
+
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
+let engine = null;
 
-async function generateQuiz() {
+// Scegliamo un modello IA piccolissimo ma ultra-intelligente in italiano
+const selectedModel = "Gemma-2-2b-it-q4f16-1";
+
+// Esponiamo la funzione nel raggio d'azione globale (window) altrimenti l'HTML non la vede
+window.generateQuiz = async function() {
     const text = document.getElementById('notes-input').value.trim();
-    const apiKey = document.getElementById('api-key').value.trim();
 
-    if (!apiKey) {
-        alert("Per favore, inserisci la tua Gemini API Key!");
-        return;
-    }
     if (!text || text.length < 15) {
         alert("Inserisci un testo più lungo per generare il quiz.");
         return;
     }
 
     document.getElementById('generate-btn').disabled = true;
-    document.getElementById('loading-text').classList.remove('hidden');
-
-    const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
-    Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
-    Le risposte errate delle scelte multiple devono essere verosimili e intelligenti. Le domande vero o falso devono essere chiare.
-    Restituisci esplicitamente ed ESCLUSIVAMENTE un array JSON (senza formattazione markdown \`\`\`json) contenente oggetti con questa esatta struttura:
-    [
-      { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
-      { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
-    ]
-    Ecco gli appunti: ${text}`;
+    const loadingBox = document.getElementById('loading-box');
+    const loadingText = document.getElementById('loading-text');
+    const progressFill = document.getElementById('progress-fill');
+    loadingBox.classList.remove('hidden');
 
     try {
-        // Chiamata HTTP diretta all'endpoint ufficiale di Google Gemini
-        const response = await fetch(`https://googleapis.com{apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseMimeType: "application/json" // Forza Gemini a sputare solo JSON valido
-                }
-            })
-        });
+        // Se l'IA locale non è ancora stata creata, la inizializziamo
+        if (!engine) {
+            engine = new webllm.CreateEngine();
+            
+            // Monitora lo scaricamento del modello sul browser dell'utente
+            engine.setInitProgressCallback((report) => {
+                const percent = Math.round(report.progress * 100);
+                loadingText.innerText = `Fase: ${report.text} (${percent}%)`;
+                progressFill.style.width = `${percent}%`;
+            });
 
-        const data = await response.json();
-        
-        if (data.error) {
-            throw new Error(data.error.message);
+            await engine.reload(selectedModel);
         }
 
-        // Estrazione del testo JSON puro restituito da Gemini
-        const jsonText = data.candidates[0].content.parts[0].text.trim();
+        loadingText.innerText = "🧠 L'IA locale sta elaborando le domande dai tuoi appunti...";
+        progressFill.style.width = "100%";
+
+        const prompt = `Analizza i seguenti appunti e genera un quiz di esattamente 10 domande in lingua italiana. 
+        Il quiz deve contenere 5 domande a scelta multipla (con 4 opzioni ciascuna) e 5 domande di tipo vero o falso.
+        Restituisci ESCLUSIVAMENTE un array JSON puro, senza alcun testo aggiuntivo e senza formattazione markdown.
+        Usa questa esatta struttura:
+        [
+          { "type": "multiple", "text": "Testo della domanda...", "correctAnswer": "Risposta esatta", "choices": ["Opzione 1", "Opzione 2", "Opzione 3", "Opzione 4"] },
+          { "type": "tf", "text": "Testo dell'affermazione...", "correctAnswer": "Vero", "explanation": "Spiegazione..." }
+        ]
+        Ecco gli appunti: ${text}`;
+
+        const messages = [
+            { role: "system", content: "Sei un generatore di quiz rigido. Rispondi solo in formato JSON, senza fare introduzioni o commenti." },
+            { role: "user", content: prompt }
+        ];
+
+        // Richiesta di generazione dei contenuti all'IA della tua scheda video
+        const reply = await engine.chat.completions.create({
+            messages: messages,
+            temperature: 0.3,
+            response_format: { type: "json_object" } // Obbliga l'IA locale a produrre codice JSON pulito
+        });
+
+        const jsonText = reply.choices[0].message.content.trim();
         questions = JSON.parse(jsonText);
 
         currentQuestionIndex = 0;
@@ -59,11 +75,11 @@ async function generateQuiz() {
         showQuestion();
 
     } catch (error) {
-        alert("Errore Gemini: " + error.message);
+        alert("Errore dell'IA Locale: " + error.message + "\nAssicurati che il tuo browser supporti WebGPU (usa Chrome o Edge aggiornati).");
         console.error(error);
     } finally {
         document.getElementById('generate-btn').disabled = false;
-        document.getElementById('loading-text').classList.add('hidden');
+        loadingBox.classList.add('hidden');
     }
 }
 
@@ -99,7 +115,7 @@ function showQuestion() {
     }
 }
 
-function checkTrueFalse(userChoice) {
+window.checkTrueFalse = function(userChoice) {
     const currentQuestion = questions[currentQuestionIndex];
     const btnVero = document.getElementById('btn-vero');
     const btnFalso = document.getElementById('btn-falso');
@@ -127,7 +143,7 @@ function checkTrueFalse(userChoice) {
 
     document.getElementById('next-btn').classList.remove('hidden');
 }
-function checkMultipleAnswer(selectedLi, selectedOption, correctOption) {
+window.checkMultipleAnswer = function(selectedLi, selectedOption, correctOption) {
     const options = document.querySelectorAll('.option-item');
     options.forEach(li => li.style.pointerEvents = 'none');
 
@@ -151,7 +167,7 @@ function checkMultipleAnswer(selectedLi, selectedOption, correctOption) {
     document.getElementById('next-btn').classList.remove('hidden');
 }
 
-function nextQuestion() {
+window.nextQuestion = function() {
     currentQuestionIndex++;
     if (currentQuestionIndex < 10) {
         showQuestion();
@@ -179,7 +195,7 @@ function showResults() {
     targetEl.style.color = evaluation.color;
 }
 
-function resetQuiz() {
+window.resetQuiz = function() {
     document.getElementById('result-screen').classList.add('hidden');
     document.getElementById('setup-screen').classList.remove('hidden');
     document.getElementById('notes-input').value = '';
