@@ -1,5 +1,3 @@
-import { GoogleGenAI } from '@google/generative-ai';
-
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
@@ -43,7 +41,8 @@ async function generateQuiz() {
     Ecco gli appunti: ${text}`;
 
     try {
-        // Inizializza l'SDK ufficiale di Google
+        // Inizializza l'SDK sfruttando l'oggetto globale inserito nell'HTML (senza alcun import)
+        const GoogleGenAI = window.googleGenAI.GoogleGenAI;
         const ai = new GoogleGenAI({ apiKey: apiKey });
         
         // Utilizziamo il modello stabile gemini-2.5-flash
@@ -51,7 +50,7 @@ async function generateQuiz() {
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
-                responseMimeType: "application/json" // Forza la struttura JSON esatta
+                responseMimeType: "application/json"
             }
         });
 
