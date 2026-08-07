@@ -138,9 +138,7 @@
     </div>
 </div>
 
-<!-- CARICAMENTO BUNDLE COMPILATO SENZA IMPORT (Evita qualsiasi errore CORS) -->
-<script src="https://jsdelivr.net"></script>
-<!-- Collegamento locale indipendente -->
-<script src="quiz.js"></script>
+<!-- Caricamento tramite modulo diretto, che garantisce l'isolamento ed evita l'errore d'inizializzazione -->
+<script type="module" src="quiz.js"></script>
 </body>
 </html>
