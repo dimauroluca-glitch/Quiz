@@ -349,12 +349,44 @@ function showResults() {
     } else { document.getElementById('error-log-container').classList.add('hidden'); }
 }
 
+// AGGIORNATO: Impacchetta gli errori e apre direttamente WhatsApp con il testo pronto
 window.exportQuizReport = function() {
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
-    let reportText = `=== REPORT NOTEQUIZ ARCADE ===\nMateria: ${safeSub}\nPunteggio: ${correctAnswersCount} / ${questions.length}\n`;
-    const blob = new Blob([reportText], { type: 'text/plain' });
-    const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `Report_NoteQuiz.txt`; link.click();
+    
+    // Generiamo il testo formattato con i grassetti di WhatsApp (*testo*)
+    let waText = `*⚡ REPORT DI STUDIO - NOTEQUIZ ARCADE ⚡*\n`;
+    waText += `-----------------------------------------\n`;
+    waText += `📅 *Data:* ${new Date().toLocaleDateString()}\n`;
+    waText += `📚 *Materia:* ${safeSub}\n`;
+    waText += `🎯 *Esito:* ${correctAnswersCount} / ${questions.length} Esatte\n`;
+    waText += `🏆 *Grado:* ${getEvaluation(correctAnswersCount, questions.length).text}\n`;
+    waText += `-----------------------------------------\n\n`;
+    
+    if (wrongAnswersLog.length > 0) {
+        waText += `❌ *ELENCO ERRORI DA RIPASSARE:* \n\n`;
+        
+        wrongAnswersLog.forEach((item, i) => {
+            waText += `*• Domanda ${i + 1}:* ${item.q}\n`;
+            waText += `  👉 _Tua risp:_ ${item.user}\n`;
+            waText += `  ✅ _Risp corr:_ *${item.correct}*\n`;
+            if (item.expl) {
+                waText += `  📖 _Dettaglio:_ ${item.expl}\n`;
+            }
+            waText += `\n`;
+        });
+    } else {
+        waText += `🔥 *PREPARAZIONE PERFETTA!* 🔥\nZero errori commessi. Sei pronto per distruggere la verifica! 🚀\n`;
+    }
+
+    // Codifichiamo il testo in modo che sia digerito correttamente dagli URL internet
+    let encodedText = encodeURIComponent(waText);
+    
+    // URL universale che apre l'applicazione di WhatsApp sia da Smartphone che da WhatsApp Web su PC
+    let whatsappUrl = `https://whatsapp.com{encodedText}`;
+    
+    // Apre la chat in una nuova scheda del browser
+    window.open(whatsappUrl, '_blank');
 }
 
 window.resetQuiz = function() {
