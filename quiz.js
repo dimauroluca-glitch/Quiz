@@ -5,6 +5,68 @@ let streak = 0;
 let wrongAnswersLog = [];
 let isCardFlipped = false;
 let currentQuizSubject = "Generale";
+// NUOVO: Gestione dello scambio visivo delle schermate per il Negozio Temi
+window.toggleShopView = function(openShop) {
+    const setupScreen = document.getElementById('setup-screen');
+    const shopScreen = document.getElementById('shop-screen');
+    
+    if (openShop) {
+        setupScreen.classList.add('hidden');
+        shopScreen.classList.remove('hidden');
+        // Rinfresca lo sblocco dei lucchetti in base ai punti correnti al momento dell'apertura
+        let currentXP = parseInt(localStorage.getItem('arcade_total_xp') || 0);
+        updateShopLockStatus(currentXP);
+    } else {
+        shopScreen.classList.add('hidden');
+        setupScreen.classList.remove('hidden');
+    }
+}
+window.triggerDailySpin = function() {
+    const todayStr = new Date().toDateString();
+    const lastSpin = localStorage.getItem('arcade_last_spin_date');
+    
+    if (lastSpin === todayStr) {
+        alert("🚨 RICOMPENSA GIÀ RISCATTATA! Torna domani per un nuovo giro di ruota.");
+        return;
+    }
+
+    // RISOLTO: Creazione dell'elenco premi tramite funzione per evitare blocchi grafici di testo
+    const rewards = new Array(200, 500, 1000, 2500, 5000);
+    const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+    
+    // Effetto sonoro speciale a 8-bit ascendente rapido per la vincita
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+        const ctx = new AudioContext(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(1500, ctx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start(); osc.stop(ctx.currentTime + 0.4);
+    }
+
+    localStorage.setItem('arcade_last_spin_date', todayStr);
+    refreshProfileXP(randomReward);
+    
+    document.getElementById('spin-status-text').innerHTML = `🎉 RISCATTATO CON SUCCESSO: <b style="color:var(--neon-green)">+${randomReward} XP</b> BONUS!`;
+    document.getElementById('spin-btn').disabled = true;
+    document.getElementById('spin-btn').style.opacity = "0.5";
+    document.getElementById('spin-btn').innerText = "LOCK FINO A DOMANI";
+}
+
+// Controlla lo stato del pulsante giornaliero all'avvio
+function checkDailySpinStatus() {
+    const todayStr = new Date().toDateString();
+    const lastSpin = localStorage.getItem('arcade_last_spin_date');
+    const spinBtn = document.getElementById('spin-btn');
+    const spinText = document.getElementById('spin-status-text');
+    
+    if (spinBtn && lastSpin === todayStr) {
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = "0.5";
+        spinBtn.innerText = "LOCK FINO A DOMANI";
+        spinText.innerHTML = `⚡ Hai già estratto il tuo premio per oggi. Torna domani!`;
+    }
+}
 
 function playArcadeSound(type) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -88,18 +150,32 @@ function addSubjectXP(subject, points) {
 function renderSubjectsList() {
     const container = document.getElementById('subjects-list-container');
     if (!container) return;
+    
     const subjectsData = JSON.parse(localStorage.getItem('arcade_subjects_xp') || "{}");
+    const subjectsRecords = JSON.parse(localStorage.getItem('arcade_subjects_records') || "{}");
+    
     if (Object.keys(subjectsData).length === 0) return;
     container.innerHTML = '';
+    
     for (let sub in subjectsData) {
         let xp = subjectsData[sub];
         let lv = Math.floor(xp / 1000) + 1;
+        // Recupera il record o mostra 0 se è la prima partita
+        let record = subjectsRecords[sub] !== undefined ? subjectsRecords[sub] : 0;
+        
         const row = document.createElement('div');
         row.className = 'subject-tag-row';
-        row.innerHTML = `<span>📚 <b>${sub}</b></span> <span style="color:var(--neon-blue)">LV.${lv} (${xp} XP)</span>`;
+        row.innerHTML = `
+            <span>📚 <b>${sub}</b></span> 
+            <span>
+                <span style="color:var(--neon-gold); margin-right:12px; font-weight:800;">🥇 TOP: ${record}/10</span>
+                <span style="color:var(--neon-blue)">LV.${lv} (${xp} XP)</span>
+            </span>
+        `;
         container.appendChild(row);
     }
 }
+
 
 function refreshProfileXP(pointsToAdd = 0) {
     let currentXP = parseInt(localStorage.getItem('arcade_total_xp') || 0);
@@ -144,7 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const hsEl = document.getElementById('global-highscore');
     if (hsEl) hsEl.innerText = `${savedHighScore} / 10`;
     changeTheme(localStorage.getItem('arcade_active_theme') || 'cyber');
-    refreshProfileXP(0); renderSubjectsList();
+    refreshProfileXP(0); 
+    renderSubjectsList();
+    checkDailySpinStatus(); // NUOVO: Controlla se la ruota è disponibile
     if (localStorage.getItem('arcade_saved_session')) {
         document.getElementById('resume-screen').classList.remove('hidden');
         document.getElementById('setup-screen').classList.add('hidden');
@@ -321,8 +399,10 @@ function getEvaluation(finalScore, total) {
 }
 
 function showResults() {
-    document.getElementById('quiz-screen').classList.add('hidden'); document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('quiz-screen').classList.add('hidden'); 
+    document.getElementById('result-screen').classList.remove('hidden');
     localStorage.removeItem('arcade_saved_session');
+    
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     document.getElementById('final-score').innerText = correctAnswersCount;
     
@@ -330,6 +410,23 @@ function showResults() {
     const targetEl = document.getElementById('evaluation-text'); 
     if (targetEl) { targetEl.innerText = evaluation.text; targetEl.style.color = evaluation.color; }
 
+    // ---- NUOVO: AGGIORNAMENTO RECORD SPECIFICO PER MATERIA ----
+    let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
+    let subjectsRecords = JSON.parse(localStorage.getItem('arcade_subjects_records') || "{}");
+    let oldMateriaRecord = subjectsRecords[safeSub] || 0;
+    if (correctAnswersCount > oldMateriaRecord) {
+        subjectsRecords[safeSub] = correctAnswersCount;
+        localStorage.setItem('arcade_subjects_records', JSON.stringify(subjectsRecords));
+    }
+
+    // Cronologia ultimi 5 test
+    const history = JSON.parse(localStorage.getItem('arcade_quiz_history') || "[]");
+    const today = new Date(); const dateStr = today.getDate() + "/" + (today.getMonth() + 1);
+    history.push({ date: dateStr, score: correctAnswersCount, total: questions.length });
+    if (history.length > 5) history.shift();
+    localStorage.setItem('arcade_quiz_history', JSON.stringify(history));
+
+    // Controllo e aggiornamento Record Assoluto Generale
     const currentHighScore = parseInt(localStorage.getItem('arcade_highscore') || 0);
     if (correctAnswersCount > currentHighScore) {
         localStorage.setItem('arcade_highscore', correctAnswersCount);
@@ -348,6 +445,7 @@ function showResults() {
         });
     } else { document.getElementById('error-log-container').classList.add('hidden'); }
 }
+
 
 // AGGIORNATO: Attiva la tendina di condivisione nativa del telefono (WhatsApp, Telegram, ecc.)
 window.exportQuizReport = function() {
