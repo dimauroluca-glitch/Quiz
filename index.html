@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⚡ NoteQuiz Arcade Ultimate Edition v4 ⚡</title>
+    <title>⚡ NoteQuiz Arcade Ultimate Edition v5 ⚡</title>
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -18,6 +18,8 @@
             --gradient-start: #1e1b4b;
             --gradient-end: #0f172a;
         }
+
+        /* 14 TEMI NEON AGGIORNATI CON SFONDI PERSONALIZZATI */
         .theme-veterano  { --neon-blue: #a1a1aa; --neon-purple: #4b5563; --gradient-start: #1e293b; --gradient-end: #0f172a; }
         .theme-suprema   { --neon-blue: #a855f7; --neon-purple: #6b21a8; --gradient-start: #2e1065; --gradient-end: #0f052d; }
         .theme-pazzo     { --neon-blue: #22c55e; --neon-purple: #15803d; --gradient-start: #062f1a; --gradient-end: #021a0c; }
@@ -31,7 +33,6 @@
         .theme-interstel { --neon-blue: #6366f1; --neon-purple: #4338ca; --gradient-start: #311042; --gradient-end: #0c0214; }
         .theme-creatore  { --neon-blue: #ec4899; --neon-purple: #9d174d; --gradient-start: #500734; --gradient-end: #200214; }
         .theme-cosmica   { --neon-blue: #00ffff; --neon-purple: #ff00ff; --gradient-start: #050515; --gradient-end: #000000; --card-bg: #070714; }
-
 
         * {
             box-sizing: border-box;
@@ -64,12 +65,6 @@
             overflow: hidden;
         }
 
-        .flash-correct { animation: flashG 0.4s ease-out; }
-        .flash-wrong { animation: flashR 0.4s ease-out; }
-
-        @keyframes flashG { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-green); } }
-        @keyframes flashR { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-red); } }
-
         .container::before {
             content: '';
             position: absolute;
@@ -77,6 +72,10 @@
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
         }
 
+        .flash-correct { animation: flashG 0.4s ease-out; }
+        .flash-wrong { animation: flashR 0.4s ease-out; }
+        @keyframes flashG { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-green); } }
+        @keyframes flashR { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-red); } }
         h1 {
             text-align: center; font-size: 2.2rem; font-weight: 800;
             background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
@@ -95,10 +94,12 @@
         .file-drop-zone { border: 2px dashed #334155; padding: 15px; border-radius: 14px; text-align: center; margin-bottom: 15px; background: rgba(15, 23, 42, 0.2); cursor: pointer; font-size: 0.85rem; color: var(--text-muted); }
         .file-drop-zone:hover { border-color: var(--neon-blue); color: var(--text-light); }
 
-        .shop-box { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 16px; margin-top: 15px; border: 1px solid #334155; text-align: center; }
-        .theme-grid { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
-        .theme-select-btn { background: #334155; color: white; border: none; padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .theme-select-btn.locked { opacity: 0.5; cursor: not-allowed; background: #1e293b; color: #64748b; }
+        /* Stile Schermata Negozio Isolata */
+        .shop-box { background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .theme-select-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 12px; font-size: 0.85rem; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; }
+        .theme-select-btn:hover:not(.locked) { border-color: var(--neon-blue); background: #334155; transform: translateY(-1px); }
+        .theme-select-btn.locked { opacity: 0.4; cursor: not-allowed; background: #0f172a; color: #475569; border-style: dashed; }
 
         .subjects-box { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 16px; margin-top: 15px; border: 1px solid #334155; text-align: left; font-size: 0.85rem; }
         .subject-tag-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -108,7 +109,7 @@
         
         textarea { width: 100%; height: 90px; padding: 12px; background: #0f172a; color: var(--text-light); border: 2px solid #334155; border-radius: 14px; resize: none; font-size: 1rem; font-family: monospace; }
         
-        .action-btn { display: block; width: 100%; background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%); color: white; border: none; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 14px; cursor: pointer; margin-top: 15px; }
+        .action-btn { display: block; width: 100%; background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%); color: white; border: none; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 14px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); }
         .action-btn:hover { transform: translateY(-2px); }
 
         .hidden { display: none !important; }
@@ -118,32 +119,12 @@
         .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); border-radius: 10px; }
 
         .streak-badge { background: linear-gradient(45deg, #f59e0b, #ef4444); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; display: inline-block; margin-left: 10px; }
-
         #question-text { font-size: 1.3rem; font-weight: 700; line-height: 1.4; margin-bottom: 25px; }
 
         .tf-container { display: flex; gap: 15px; margin-top: 20px; }
-                .option-btn {
-            flex: 1;
-            background: #1e293b;
-            padding: 20px;
-            font-size: 1.2rem;
-            font-weight: 800;
-            text-align: center;
-            border-radius: 16px;
-            cursor: pointer;
-            border: 2px solid #334155;
-            touch-action: manipulation;
-        }
+        .option-btn { flex: 1; background: #1e293b; padding: 20px; font-size: 1.2rem; font-weight: 800; text-align: center; border-radius: 16px; cursor: pointer; border: 2px solid #334155; touch-action: manipulation; }
+        .option-btn:hover { background: #334155; transform: scale(1.03); }
 
-        /* AGGIORNATO: Ora i pulsanti Vero/Falso si ingrandiscono al passaggio del mouse su PC */
-        .option-btn:hover { 
-            background: #334155; 
-            transform: scale(1.03); 
-        }
-        
-        #btn-vero:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(74, 222, 128, 0.2); }
-        #btn-falso:hover { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
-        
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
         .option-item { background: #0f172a; padding: 16px 20px; margin: 12px 0; border-radius: 14px; cursor: pointer; border: 2px solid #334155; font-size: 1.05rem; font-weight: 600; }
         .option-item:hover { border-color: var(--neon-blue); background: #1e293b; transform: translateX(3px); }
@@ -168,6 +149,7 @@
             h1 { font-size: 1.7rem; }
             .hud-widget { min-width: 100px; padding: 8px; font-size: 0.75rem; }
             .widget-val { font-size: 0.95rem; }
+            .theme-grid { grid-template-columns: 1fr; }
             #question-text { font-size: 1.1rem; }
             .option-btn { padding: 15px; font-size: 1rem; }
             .option-item { padding: 12px 14px; font-size: 0.95rem; }
@@ -179,12 +161,25 @@
     <h1>⚡ NoteQuiz Arcade ⚡</h1>
     <p class="subtitle">Distruggi i test, accumula combo e sblocca ricompense</p>
     
+    <!-- Dashboard HUD -->
     <div class="dashboard-hud">
         <div class="hud-widget">👤 GRADO PROFILO<span id="profile-rank" class="widget-val">RECLUTA</span></div>
         <div class="hud-widget">⭐ ESPERIENZA<span id="profile-xp" class="widget-val" style="color:var(--neon-blue);">0 XP</span></div>
         <div class="hud-widget">🏆 RECORD<span id="global-highscore" class="widget-val">0 / 10</span></div>
     </div>
 
+    <!-- Barra di avanzamento XP globale tarata su 1 Miliardo -->
+    <div style="background: rgba(15, 23, 42, 0.5); padding: 12px 16px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #334155;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--neon-purple); margin-bottom: 5px;">
+            <span>PROGRESSO LIVELLO GALATTICO</span>
+            <span id="profile-xp-percent">0%</span>
+        </div>
+        <div style="width: 100%; background: #334155; height: 10px; border-radius: 10px; overflow: hidden;">
+            <div id="profile-xp-bar-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-purple), var(--neon-gold)); border-radius: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Schermata di ripristino salvataggio -->
     <div id="resume-screen" class="hidden" style="text-align: center; background: rgba(124, 58, 237, 0.1); border: 1px solid var(--neon-purple); padding: 20px; border-radius: 14px; margin-bottom: 20px;">
         <span style="font-weight:700; color:var(--neon-purple); display:block; margin-bottom:5px;">💾 ACCESSO RAPIDO SALVATO</span>
         <span style="font-size:0.9rem; display:block; margin-bottom:15px; color:var(--text-muted);">Riprendi l'ultimo quiz interrotto.</span>
@@ -194,9 +189,9 @@
         </div>
     </div>
     
+    <!-- 1. Schermata Setup Opzioni -->
     <div id="setup-screen">
         <div class="copy-box">
-            <span style="font-weight: 600; font-size: 0.85rem; display: block; color: var(--neon-purple); margin-bottom: 5px;">🤖 FASE 1: GENERA LE DOMANDE</span>
             <button class="copy-btn" onclick="copyPromptToClipboard()">📋 COPIA COMANDO PER L'IA</button>
         </div>
 
@@ -205,43 +200,58 @@
             <input type="file" id="file-loader-input" class="hidden" accept=".json" onchange="handleFileImport(this.files)">
         </div>
 
-        <textarea id="notes-input" placeholder="Oppure incolla qui il codice JSON..."></textarea>
+        <textarea id="notes-input" placeholder="Incolla qui il codice JSON..."></textarea>
         
         <div style="display: flex; gap: 10px;">
             <button class="action-btn" style="flex: 1;" onclick="startOfflineQuiz('quiz')">🎮 AVVIA QUIZ</button>
             <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);" onclick="startOfflineQuiz('flashcard')">🃏 FLASHCARD</button>
         </div>
 
+                <!-- Bottone grande per navigare all'Arsenale dei Temi -->
+        <button class="action-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onclick="toggleShopView(true)">🛍️ APRI ARSENALE NEGOZIO TEMI</button>
+
+        <!-- NUOVO: Modulo Daily Spin Arcade -->
+        <div id="daily-spin-box" class="subjects-box" style="text-align: center; border-color: var(--neon-gold); background: rgba(245, 158, 11, 0.05); margin-top: 15px;">
+            <div style="font-weight:800; color:var(--neon-gold); text-transform: uppercase; margin-bottom: 5px;">🎰 DAILY BONUS REWARD</div>
+            <span id="spin-status-text" style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:10px;">Estrai il tuo bottino di punti giornaliero gratuito!</span>
+            <button id="spin-btn" class="copy-btn" style="background:var(--neon-gold); color:var(--bg-dark);" onclick="triggerDailySpin()">🎰 GIRA LA RUOTA</button>
+        </div>
+
         <div class="subjects-box">
-            <div style="font-weight:800; color:var(--neon-purple); text-align:center; margin-bottom:8px;">📚 ACCADEMIA DELLE MATERIE</div>
+            <div style="font-weight:800; color:var(--neon-purple); text-align:center; margin-bottom:8px;">📚 ACCADEMIA DELLE MATERIE & RECORD</div>
             <div id="subjects-list-container">
                 <div style="color:var(--text-muted); text-align:center; font-size:0.8rem;">Nessuna materia registrata. Fai il tuo primo test!</div>
             </div>
         </div>
 
-        <div class="shop-box">
-            <div style="font-weight:800; color:var(--neon-gold); margin-bottom: 10px;">🛍️ ARSENALE DEI 14 TEMI SBLOCCABILI</div>
-            <div class="theme-grid">
-                <button class="theme-select-btn" onclick="changeTheme('cyber')">Blue Cyber (0 XP)</button>
-                <button id="shop-btn-veterano" class="theme-select-btn locked" onclick="changeTheme('veterano')">Veterano (4k XP)</button>
-                <button id="shop-btn-suprema" class="theme-select-btn locked" onclick="changeTheme('suprema')">Intelligenza Suprema (8k XP)</button>
-                <button id="shop-btn-pazzo" class="theme-select-btn locked" onclick="changeTheme('pazzo')">Scienziato Pazzo (15k XP)</button>
-                <button id="shop-btn-master" class="theme-select-btn locked" onclick="changeTheme('master')">Master Copia-Incolla (30k XP)</button>
-                <button id="shop-btn-divina" class="theme-select-btn locked" onclick="changeTheme('divina')">Divinità dello Studio (50k XP)</button>
-                <button id="shop-btn-enciclo" class="theme-select-btn locked" onclick="changeTheme('enciclo')">Enciclopedia Vivente (100k XP)</button>
-                <button id="shop-btn-architeto" class="theme-select-btn locked" onclick="changeTheme('architeto')">Architetto del Sapere (250k XP)</button>
-                <button id="shop-btn-filosofo" class="theme-select-btn locked" onclick="changeTheme('filosofo')">Filosofo Immortale (500k XP)</button>
-                <button id="shop-btn-alieni" class="theme-select-btn locked" onclick="changeTheme('alieni')">Intelligenza Alieni (1M XP)</button>
-                <button id="shop-btn-reassoluto" class="theme-select-btn locked" onclick="changeTheme('reassoluto')">Re del Copia-Incolla (10M XP)</button>
-                <button id="shop-btn-interstel" class="theme-select-btn locked" onclick="changeTheme('interstel')">Entità Interstellare (100M XP)</button>
-                <button id="shop-btn-creatore" class="theme-select-btn locked" onclick="changeTheme('creatore')">Creatore di Mondi (500M XP)</button>
-                <button id="shop-btn-cosmica" class="theme-select-btn locked" onclick="changeTheme('cosmica')">Singolarità Cosmica (1B XP)</button>
-            </div>
-        </div>
-
         <button onclick="wipeAllArcadeData()" style="background: transparent; color: #64748b; border: 1px solid #334155; padding: 8px; font-size: 0.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; width: auto; display: block; margin: 20px auto 0 auto;">⚠️ CANCELLA DATI PROFILO</button>
     </div>
+    <!-- 2. SCHERMATA ISOLATA: Arsenale Negozio Temi -->
+    <div id="shop-screen" class="hidden shop-box">
+        <div style="font-weight:800; color:var(--neon-gold); font-size: 1.3rem;">🛍️ ARSENALE DEI 14 TEMI SBLOCCABILI</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">I temi si sbloccano automaticamente raggiungendo i gradi XP richiesti.</p>
+        
+        <div class="theme-grid">
+            <button class="theme-select-btn" onclick="changeTheme('cyber')">Blue Cyber (0 XP)</button>
+            <button id="shop-btn-veterano" class="theme-select-btn locked" onclick="changeTheme('veterano')">Veterano (4k XP)</button>
+            <button id="shop-btn-suprema" class="theme-select-btn locked" onclick="changeTheme('suprema')">Intelligenza Suprema (8k XP)</button>
+            <button id="shop-btn-pazzo" class="theme-select-btn locked" onclick="changeTheme('pazzo')">Scienziato Pazzo (15k XP)</button>
+            <button id="shop-btn-master" class="theme-select-btn locked" onclick="changeTheme('master')">Master Copia-Incolla (30k XP)</button>
+            <button id="shop-btn-divina" class="theme-select-btn locked" onclick="changeTheme('divina')">Divinità dello Studio (50k XP)</button>
+            <button id="shop-btn-enciclo" class="theme-select-btn locked" onclick="changeTheme('enciclo')">Enciclopedia Vivente (100k XP)</button>
+            <button id="shop-btn-architeto" class="theme-select-btn locked" onclick="changeTheme('architeto')">Architetto del Sapere (250k XP)</button>
+            <button id="shop-btn-filosofo" class="theme-select-btn locked" onclick="changeTheme('filosofo')">Filosofo Immortale (500k XP)</button>
+            <button id="shop-btn-alieni" class="theme-select-btn locked" onclick="changeTheme('alieni')">Intelligenza Alieni (1M XP)</button>
+            <button id="shop-btn-reassoluto" class="theme-select-btn locked" onclick="changeTheme('reassoluto')">Re del Copia-Incolla (10M XP)</button>
+            <button id="shop-btn-interstel" class="theme-select-btn locked" onclick="changeTheme('interstel')">Entità Interstellare (100M XP)</button>
+            <button id="shop-btn-creatore" class="theme-select-btn locked" onclick="changeTheme('creatore')">Creatore di Mondi (500M XP)</button>
+            <button id="shop-btn-cosmica" class="theme-select-btn locked" onclick="changeTheme('cosmica')">Singolarità Cosmic (1B XP)</button>
+        </div>
+        
+        <button class="action-btn" style="background: #334155; margin-top: 20px;" onclick="toggleShopView(false)">◀ TORNA ALLA HOME</button>
+    </div>
 
+    <!-- 3. Schermata Modalità Allenamento Flashcard -->
     <div id="flashcard-screen" class="hidden">
         <div class="progress-hud">
             <span id="flash-hud-index">CARTA 1</span>
@@ -255,6 +265,7 @@
         <button class="action-btn" style="background: #b91c1c; margin-top: 20px;" onclick="exitFlashcards()">❌ ESCI E AVVIA QUIZ</button>
     </div>
 
+    <!-- 4. Schermata Quiz Giocabile -->
     <div id="quiz-screen" class="hidden">
         <div class="progress-hud">
             <span id="hud-current">STAGE 1</span>
@@ -275,6 +286,7 @@
         <button id="next-btn" class="hidden action-btn" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
     </div>
 
+    <!-- 5. Schermata Risultati -->
     <div id="result-screen" class="hidden">
         <h2>🏆 CLASSIFICA FINALE 🏆</h2>
         <p class="score" style="text-align: center; font-size: 1.3rem;">Punteggio Finale: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>
@@ -286,9 +298,8 @@
             <div id="error-log-list" class="error-log-box"></div>
         </div>
         
-                        <!-- AGGIORNATO: Pulsante Condividi Nativo per Smartphone e PC -->
         <div style="display:flex; gap:10px;">
-            <button class="action-btn" style="flex:1; background:#0284c7; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);" onclick="exportQuizReport()">🔗 CONDIVIDI REOCORD / ERRORI</button>
+            <button class="action-btn" style="flex:1; background:#0284c7;" onclick="exportQuizReport()">🔗 CONDIVIDI RISULTATI</button>
             <button class="action-btn" style="flex:1;" onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
         </div>
     </div>
