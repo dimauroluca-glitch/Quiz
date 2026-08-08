@@ -349,44 +349,50 @@ function showResults() {
     } else { document.getElementById('error-log-container').classList.add('hidden'); }
 }
 
-// AGGIORNATO: Impacchetta gli errori e apre direttamente WhatsApp con il testo pronto
+// AGGIORNATO: Attiva la tendina di condivisione nativa del telefono (WhatsApp, Telegram, ecc.)
 window.exportQuizReport = function() {
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
     
-    // Generiamo il testo formattato con i grassetti di WhatsApp (*testo*)
-    let waText = `*⚡ REPORT DI STUDIO - NOTEQUIZ ARCADE ⚡*\n`;
-    waText += `-----------------------------------------\n`;
-    waText += `📅 *Data:* ${new Date().toLocaleDateString()}\n`;
-    waText += `📚 *Materia:* ${safeSub}\n`;
-    waText += `🎯 *Esito:* ${correctAnswersCount} / ${questions.length} Esatte\n`;
-    waText += `🏆 *Grado:* ${getEvaluation(correctAnswersCount, questions.length).text}\n`;
-    waText += `-----------------------------------------\n\n`;
+    // Testo ottimizzato e formattato per la condivisione social
+    let shareText = `⚡ REPORT DI STUDIO - NOTEQUIZ ARCADE ⚡\n`;
+    shareText += `-----------------------------------------\n`;
+    shareText += `📚 Materia: ${safeSub}\n`;
+    shareText += `🎯 Esito: ${correctAnswersCount} / ${questions.length} Esatte\n`;
+    shareText += `🏆 Grado: ${getEvaluation(correctAnswersCount, questions.length).text}\n`;
+    shareText += `-----------------------------------------\n\n`;
     
     if (wrongAnswersLog.length > 0) {
-        waText += `❌ *ELENCO ERRORI DA RIPASSARE:* \n\n`;
-        
+        shareText += `❌ ELENCO ERRORI DA RIPASSARE:\n\n`;
         wrongAnswersLog.forEach((item, i) => {
-            waText += `*• Domanda ${i + 1}:* ${item.q}\n`;
-            waText += `  👉 _Tua risp:_ ${item.user}\n`;
-            waText += `  ✅ _Risp corr:_ *${item.correct}*\n`;
+            shareText += `• Domanda ${i + 1}: ${item.q}\n`;
+            shareText += `  Tua risp: ${item.user}\n`;
+            shareText += `  Risp corr: ${item.correct}\n`;
             if (item.expl) {
-                waText += `  📖 _Dettaglio:_ ${item.expl}\n`;
+                shareText += `  Dettaglio: ${item.expl}\n`;
             }
-            waText += `\n`;
+            shareText += `\n`;
         });
     } else {
-        waText += `🔥 *PREPARAZIONE PERFETTA!* 🔥\nZero errori commessi. Sei pronto per distruggere la verifica! 🚀\n`;
+        shareText += `🔥 PREPARAZIONE PERFETTA! 🔥\nZero errori commessi. Pronto per la verifica! 🚀\n`;
     }
 
-    // Codifichiamo il testo in modo che sia digerito correttamente dagli URL internet
-    let encodedText = encodeURIComponent(waText);
-    
-    // URL universale che apre l'applicazione di WhatsApp sia da Smartphone che da WhatsApp Web su PC
-    let whatsappUrl = `https://whatsapp.com{encodedText}`;
-    
-    // Apre la chat in una nuova scheda del browser
-    window.open(whatsappUrl, '_blank');
+    // CONTROLLO COMPATIBILITÀ: Se il dispositivo supporta la condivisione nativa (Smartphone)
+    if (navigator.share) {
+        navigator.share({
+            title: `Report NoteQuiz - ${safeSub}`,
+            text: shareText
+        })
+        .then(() => console.log('Condivisione riuscita!'))
+        .catch((error) => console.log('Errore condivisione:', error));
+    } else {
+        // PIANO DI RISERVA PER PC: Copia il testo negli appunti automaticamente
+        navigator.clipboard.writeText(shareText).then(() => {
+            alert("Il tuo browser non supporta la tendina di condivisione. Il report è stato COPIATO NEGLI APPUNTI! Puoi incollarlo manualmente (Ctrl+V) su WhatsApp Web o via mail.");
+        }).catch(err => {
+            alert("Impossibile copiare il testo in automatico.");
+        });
+    }
 }
 
 window.resetQuiz = function() {
