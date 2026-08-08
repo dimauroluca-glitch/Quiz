@@ -39,7 +39,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-                body {
+        body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-light);
@@ -122,7 +122,27 @@
         #question-text { font-size: 1.3rem; font-weight: 700; line-height: 1.4; margin-bottom: 25px; }
 
         .tf-container { display: flex; gap: 15px; margin-top: 20px; }
-        .option-btn { flex: 1; background: #1e293b; padding: 20px; font-size: 1.2rem; font-weight: 800; text-align: center; border-radius: 16px; cursor: pointer; border: 2px solid #334155; touch-action: manipulation; }
+                .option-btn {
+            flex: 1;
+            background: #1e293b;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-align: center;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 2px solid #334155;
+            touch-action: manipulation;
+        }
+
+        /* AGGIORNATO: Ora i pulsanti Vero/Falso si ingrandiscono al passaggio del mouse su PC */
+        .option-btn:hover { 
+            background: #334155; 
+            transform: scale(1.03); 
+        }
+        
+        #btn-vero:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(74, 222, 128, 0.2); }
+        #btn-falso:hover { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
         
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
         .option-item { background: #0f172a; padding: 16px 20px; margin: 12px 0; border-radius: 14px; cursor: pointer; border: 2px solid #334155; font-size: 1.05rem; font-weight: 600; }
@@ -266,8 +286,9 @@
             <div id="error-log-list" class="error-log-box"></div>
         </div>
         
+                <!-- AGGIORNATO: Icona e testo per l'invio su WhatsApp -->
         <div style="display:flex; gap:10px;">
-            <button class="action-btn" style="flex:1; background:#475569;" onclick="exportQuizReport()">📥 SALVA REPORT</button>
+            <button class="action-btn" style="flex:1; background:#25d366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);" onclick="exportQuizReport()">💬 INVIA REPORT SU WHATSAPP</button>
             <button class="action-btn" style="flex:1;" onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
         </div>
     </div>
