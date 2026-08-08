@@ -513,9 +513,47 @@ window.askTutorAI = function(encodedQ, encodedAns) {
 window.exportQuizReport = function() {
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
-    let text = `⚡ REPORT NOTEQUIZ ⚡\nMateria: ${safeSub}\nPunteggio: ${correctAnswersCount} / ${questions.length}\n`;
-    if (navigator.share) { navigator.share({ title: `Report NoteQuiz`, text: text }).catch(() => {}); } 
-    else { navigator.clipboard.writeText(text).then(() => alert("Report copiato!")); }
+    
+    // 1. Generazione dell'intestazione del report
+    let shareText = `⚡ REPORT DI STUDIO - NOTEQUIZ ARCADE ⚡\n`;
+    shareText += `-----------------------------------------\n`;
+    shareText += `📚 Materia: ${safeSub}\n`;
+    shareText += `🎯 Esito: ${correctAnswersCount} / ${questions.length} Esatte\n`;
+    shareText += `🏆 Grado: ${getEvaluation(correctAnswersCount, questions.length).text}\n`;
+    shareText += `-----------------------------------------\n\n`;
+    
+    // CORRETTO: Ora il codice controlla e concatena gli errori reali al testo di condivisione
+    if (wrongAnswersLog.length > 0) {
+        shareText += `❌ ELENCO ERRORI DA RIPASSARE:\n\n`;
+        wrongAnswersLog.forEach((item, i) => {
+            shareText += `• Domanda ${i + 1}: ${item.q}\n`;
+            shareText += `  Tua risp: ${item.user}\n`;
+            shareText += `  Risp corr: ${item.correct}\n`;
+            if (item.expl) {
+                shareText += `  Dettaglio: ${item.expl}\n`;
+            }
+            shareText += `\n`;
+        });
+    } else {
+        shareText += `🔥 PREPARAZIONE PERFETTA! 🔥\nZero errori commessi. Pronto per la verifica! 🚀\n`;
+    }
+
+    // 2. Invio del blocco di testo completo al sistema di condivisione nativo
+    if (navigator.share) {
+        navigator.share({ 
+            title: `Report NoteQuiz - ${safeSub}`, 
+            text: shareText 
+        })
+        .then(() => console.log('Condivisione riuscita!'))
+        .catch((error) => console.log('Errore condivisione:', error));
+    } else {
+        // Soluzione di riserva per PC: copia tutto il testo negli appunti
+        navigator.clipboard.writeText(shareText).then(() => {
+            alert("Il report completo (inclusi gli errori) è stato COPIATO NEGLI APPUNTI! Puoi incollarlo manualmente (Ctrl+V) dove preferisci.");
+        }).catch(err => { 
+            alert("Impossibile copiare il testo."); 
+        });
+    }
 }
 
 window.resetQuiz = function() {
