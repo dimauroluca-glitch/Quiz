@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    background-color: #05070a;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(5, 7, 10, 0.97);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #f1f2f6;
+    padding: 20px;
+}
+
+.hidden { display: none !important; }
+.neonText { font-size: 32px; color: #00d2d3; text-shadow: 0 0 10px #00d2d3, 0 0 20px #00d2d3; margin-bottom: 15px; }
+.redNeonText { font-size: 32px; color: #ff4757; text-shadow: 0 0 10px #ff4757, 0 0 20px #ff4757; margin-bottom: 15px; }
+.overlay p { font-size: 14px; color: #a4b0be; margin-bottom: 25px; max-width: 320px; line-height: 1.4; }
+#statsSummary { font-size: 16px; color: #eccc68; margin-bottom: 25px; }
+
+.actionBtn {
+    background-color: #00d2d3; color: #07090e; border: none; padding: 14px 40px; font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 210, 211, 0.5);
+}
+.redBtn { background-color: #ff4757; color: #fff; box-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+
+#floorTitle { color: #ff4757; font-size: 15px; letter-spacing: 1px; text-align: center; margin-bottom: 2px; }
+#classTitle { color: #eccc68; font-size: 12px; margin-bottom: 2px; text-transform: uppercase; }
+#gameUi { color: #f1f2f6; font-size: 12px; margin-bottom: 2px; text-align: center; width: 100%; max-width: 450px; display: flex; justify-content: space-between; }
+#recordUi { color: #747d8c; font-size: 11px; margin-bottom: 4px; text-align: center; width: 100%; max-width: 450px; }
+#equipUi { color: #00d2d3; font-size: 10px; margin-bottom: 6px; width: 100%; max-width: 450px; display: flex; justify-content: space-between; background-color: #0d121d; padding: 4px 8px; border-radius: 4px; border: 1px solid #1a2233; }
+
+#canvasContainer { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 4px; }
+
+/* STILE NUOVA BARRA DELLA VITA ROSSA SOPRA AL CANVAS */
+#hpBarContainer {
+    width: 100%; height: 6px; background-color: #121824; border: 1px solid #232d42; border-bottom: none; border-radius: 6px 6px 0 0; overflow: hidden;
+}
+#hpBarFill {
+    width: 100%; height: 100%; background-color: #ff4757; box-shadow: 0 0 8px #ff4757; transition: width 0.15s ease-out;
+}
+
+canvas { background-color: #07090e; border: 3px solid #1e272e; display: block; width: 100%; max-height: 36vh; box-shadow: 0px 0px 25px rgba(0,0,0,0.9); }
+
+/* STILE BARRA ESPERIENZA AZZURRA SOTTO AL CANVAS */
+#expBarContainer { width: 100%; height: 6px; background-color: #121824; border: 1px solid #232d42; border-top: none; border-radius: 0 0 6px 6px; overflow: hidden; }
+#expBarFill { width: 0%; height: 100%; background-color: #00d2d3; box-shadow: 0 0 8px #00d2d3; transition: width 0.2s ease-out; }
+
+#shopUi { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; width: 100%; max-width: 450px; margin-top: 6px; }
+.shopBtn { background-color: #121824; color: #fff; border: 1.5px solid #232d42; padding: 5px; font-size: 11px; font-weight: bold; border-radius: 6px; }
+.shopBtn:active { background-color: #232d42; }
+.price { color: #eccc68; font-size: 10px; }
+
+#mobileControlsArea { width: 100%; max-width: 450px; height: 120px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+#joystickZone { flex: 1; height: 100%; background-color: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.05); position: relative; touch-action: none; }
+#actionZone { width: 100px; height: 100%; display: flex; align-items: center; justify-content: center; }
+#btnSkill { width: 68px; height: 68px; border-radius: 50%; background-color: #006266; border: 3px solid #1289a7; color: #00d2d3; font-size: 14px; font-weight: bold; box-shadow: 0 0 10px rgba(0, 210, 211, 0.4); touch-action: manipulation; }
+#btnSkill:active { background-color: #1289a7; color: #fff; }
