@@ -7,7 +7,7 @@ set -e
 echo "Inserisci il messaggio di commit:"
 read -r commit_message
 
-# Controlla che il messaggio non sia vuoto
+# Controlla che il messaggio non sei vuoto
 if [ -z "$commit_message" ]; then
     echo "Errore: Il messaggio di commit non può essere vuoto."
     exit 1
@@ -16,6 +16,8 @@ fi
 # Esegue i comandi Git
 git add .
 git commit -m "$commit_message"
-git push
 
-echo "Push completato con successo!"
+# FORZA IL PUSH SOLO SU MAIN
+git push origin main
+
+echo "Push completato con successo su main!"
