@@ -2,128 +2,288 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteQuiz AI - 100% Locale e Gratuito</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ NoteQuiz Arcade Ultimate Edition ⚡</title>
     <style>
         :root {
-            --primary: #4a90e2;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --neon-blue: #38bdf8;
+            --neon-purple: #c084fc;
+            --neon-green: #4ade80;
+            --neon-red: #f87171;
+            --neon-gold: #f59e0b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-start: #1e1b4b;
+            --gradient-end: #0f172a;
+        }
+        .theme-veterano  { --neon-blue: #a1a1aa; --neon-purple: #4b5563; --gradient-start: #1e293b; --gradient-end: #0f172a; }
+        .theme-suprema   { --neon-blue: #a855f7; --neon-purple: #6b21a8; --gradient-start: #2e1065; --gradient-end: #0f052d; }
+        .theme-pazzo     { --neon-blue: #22c55e; --neon-purple: #15803d; --gradient-start: #062f1a; --gradient-end: #021a0c; }
+        .theme-master    { --neon-blue: #06b6d4; --neon-purple: #0891b2; --gradient-start: #083344; --gradient-end: #02141e; }
+        .theme-divina    { --neon-blue: #f43f5e; --neon-purple: #be123c; --gradient-start: #4c0519; --gradient-end: #1c020a; }
+        .theme-enciclo   { --neon-blue: #3b82f6; --neon-purple: #1d4ed8; --gradient-start: #172554; --gradient-end: #050b24; }
+        .theme-architeto { --neon-blue: #10b981; --neon-purple: #047857; --gradient-start: #022c22; --gradient-end: #011510; }
+        .theme-filosofo  { --neon-blue: #eab308; --neon-purple: #a16207; --gradient-start: #422006; --gradient-end: #1c0d02; }
+        .theme-alieni    { --neon-blue: #d946ef; --neon-purple: #a21caf; --gradient-start: #4a044e; --gradient-end: #1f0220; }
+        .theme-reassoluto{ --neon-blue: #f97316; --neon-purple: #c2410c; --gradient-start: #431407; --gradient-end: #1a0602; }
+        .theme-interstel { --neon-blue: #6366f1; --neon-purple: #4338ca; --gradient-start: #311042; --gradient-end: #0c0214; }
+        .theme-creatore  { --neon-blue: #ec4899; --neon-purple: #9d174d; --gradient-start: #500734; --gradient-end: #200214; }
+        .theme-cosmica   { --neon-blue: #00ffff; --neon-purple: #ff00ff; --gradient-start: #050515; --gradient-end: #000000; --card-bg: #070714; }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: var(--light);
-            color: var(--dark);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             margin: 0;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, var(--gradient-start) 0%, var(--gradient-end) 100%);
         }
+
         .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(192, 132, 252, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
         }
-        h1, h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        }
+
+        .flash-correct { animation: flashG 0.4s ease-out; }
+        .flash-wrong { animation: flashR 0.4s ease-out; }
+        @keyframes flashG { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-green); } }
+        @keyframes flashR { 0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 40px var(--neon-red); } }
+
+        h1 {
+            text-align: center; font-size: 2.2rem; font-weight: 800;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-top: 10px; margin-bottom: 5px; letter-spacing: -0.5px;
+        }
+
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem; }
+
+        .dashboard-hud { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 25px; flex-wrap: wrap; }
+        .hud-widget { flex: 1; min-width: 140px; background: rgba(15, 23, 42, 0.4); border: 1px solid #334155; padding: 10px 14px; border-radius: 16px; text-align: center; font-size: 0.85rem; font-weight: 700; }
+        .widget-val { display: block; font-size: 1.1rem; margin-top: 4px; }
+        #profile-rank { color: var(--neon-purple); }
+        #global-highscore { color: var(--neon-gold); }
+
+        .file-drop-zone { border: 2px dashed #334155; padding: 15px; border-radius: 14px; text-align: center; margin-bottom: 15px; background: rgba(15, 23, 42, 0.2); cursor: pointer; font-size: 0.85rem; color: var(--text-muted); }
+        .file-drop-zone:hover { border-color: var(--neon-blue); color: var(--text-light); }
+
+        /* Negozio Temi Isolato */
+        .shop-box { background: rgba(15, 23, 42, 0.3); padding: 20px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .theme-select-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 12px; font-size: 0.85rem; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; }
+        .theme-select-btn:hover:not(.locked) { border-color: var(--neon-blue); background: #334155; transform: translateY(-1px); }
+        .theme-select-btn.locked { opacity: 0.4; cursor: not-allowed; background: #0f172a; color: #475569; border-style: dashed; }
+
+        .subjects-box { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 16px; margin-top: 15px; border: 1px solid #334155; text-align: left; font-size: 0.85rem; }
+        .subject-tag-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        textarea {
-            width: 100%;
-            height: 180px;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        button {
-            display: block;
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: #357abd; }
-        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        .copy-box { background: rgba(56, 189, 248, 0.1); border: 1px dashed var(--neon-blue); padding: 15px; border-radius: 14px; margin-bottom: 20px; text-align: center; }
+        .copy-btn { background: var(--neon-blue); color: var(--bg-dark); border: none; padding: 10px 20px; font-size: 0.9rem; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 5px; box-shadow: 0 4px 10px rgba(56, 189, 248, 0.2); }
+        
+        textarea { width: 100%; height: 90px; padding: 12px; background: #0f172a; color: var(--text-light); border: 2px solid #334155; border-radius: 14px; resize: none; font-size: 1rem; font-family: monospace; }
+        
+        .action-btn { display: block; width: 100%; background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%); color: white; border: none; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 14px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); }
+        .action-btn:hover { transform: translateY(-2px); }
+
         .hidden { display: none !important; }
-        
-        /* Barra di avanzamento per il download del modello */
-        .progress-container { background: #eef2f7; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #ddd; }
-        .progress-bar-bg { width: 100%; background-color: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
-        .progress-bar-fill { width: 0%; height: 100%; background-color: var(--primary); transition: width 0.3s; }
-        
-        .tf-container { display: flex; gap: 20px; justify-content: center; padding: 0; margin-top: 20px; }
-        .option-btn {
-            flex: 1;
-            max-width: 200px;
-            background: var(--light);
-            padding: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid #ddd;
-            transition: all 0.2s;
-        }
-        .option-btn:hover { background: #edf2f7; border-color: var(--primary); }
-        
+
+        .progress-hud { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; background: rgba(15, 23, 42, 0.5); padding: 10px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: var(--neon-blue); }
+        .progress-track { flex-grow: 1; height: 8px; background: #334155; border-radius: 10px; margin: 0 15px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); border-radius: 10px; }
+
+        .streak-badge { background: linear-gradient(45deg, #f59e0b, #ef4444); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; display: inline-block; margin-left: 10px; }
+        #question-text { font-size: 1.3rem; font-weight: 700; line-height: 1.4; margin-bottom: 25px; }
+
+        .tf-container { display: flex; gap: 15px; margin-top: 20px; }
+        .option-btn { flex: 1; background: #1e293b; padding: 20px; font-size: 1.2rem; font-weight: 800; text-align: center; border-radius: 16px; cursor: pointer; border: 2px solid #334155; touch-action: manipulation; }
+        .option-btn:hover { background: #334155; transform: scale(1.03); }
+
         .options-list { list-style: none; padding: 0; margin-top: 20px; }
-        .option-item {
-            background: var(--light);
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            transition: all 0.2s;
-            font-size: 16px;
+        .option-item { background: #0f172a; padding: 16px 20px; margin: 12px 0; border-radius: 14px; cursor: pointer; border: 2px solid #334155; font-size: 1.05rem; font-weight: 600; }
+        .option-item:hover { border-color: var(--neon-blue); background: #1e293b; transform: translateX(3px); }
+
+        .correct { background-color: rgba(74, 222, 128, 0.15) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
+        .wrong { background-color: rgba(248, 113, 113, 0.15) !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
+
+        .feedback { text-align: center; font-size: 1.1rem; margin-top: 25px; font-weight: 700; min-height: 30px; }
+        #evaluation-text { font-size: 1.6rem; font-weight: 800; text-align: center; margin: 25px 0; text-transform: uppercase; }
+
+        .error-log-box { background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 14px; margin-top: 20px; max-height: 150px; overflow-y: auto; text-align: left; border: 1px solid #334155; }
+        .error-item { border-bottom: 1px solid #334155; padding: 8px 0; font-size: 0.9rem; }
+        
+        .flashcard-card { background: #0f172a; border: 2px solid var(--neon-blue); border-radius: 16px; padding: 30px 20px; text-align: center; min-height: 180px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; cursor: pointer; margin-bottom: 15px; }
+        .flashcard-controls { display: flex; gap: 15px; justify-content: space-between; }
+
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .container { padding: 20px 15px; border-radius: 16px; }
+            h1 { font-size: 1.7rem; }
+            .hud-widget { min-width: 100px; padding: 8px; font-size: 0.75rem; }
+            .widget-val { font-size: 0.95rem; }
+            .theme-grid { grid-template-columns: 1fr; }
+            #question-text { font-size: 1.1rem; }
+            .option-btn { padding: 15px; font-size: 1rem; }
+            .option-item { padding: 12px 14px; font-size: 0.95rem; }
         }
-        .option-item:hover { background: #edf2f7; border-color: var(--primary); }
-        
-        .correct { background-color: var(--success) !important; color: white !important; border-color: var(--success) !important; }
-        .wrong { background-color: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
-        
-        .score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px; }
-        .feedback { text-align: center; font-size: 16px; margin-top: 20px; font-weight: bold; min-height: 24px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>🧠 NoteQuiz AI 100% Locale</h1>
-    <p class="subtitle">Nessuna chiave API. L'IA gira direttamente sul tuo computer in modo anonimo e gratuito.</p>
+<div id="game-container" class="container">
+    <h1>⚡ NoteQuiz Arcade ⚡</h1>
+    <p class="subtitle">Distruggi i test, accumula combo e sblocca ricompense</p>
     
-       <!-- 1. Schermata Input Testo -->
-    <div id="setup-screen">
-        <textarea id="notes-input" placeholder="Incolla qui i tuoi appunti..."></textarea>
-        <!-- Rimosso onclick, aggiunto id="generate-btn" -->
-        <button id="generate-btn">Inizializza IA e Genera Quiz</button>
-        
-        <!-- Stato di Caricamento Modello IA -->
-        <div id="loading-box" class="progress-container hidden">
-            <span id="loading-text" style="font-size: 13px; font-weight: bold; color: var(--dark);">Caricamento del motore IA...</span>
-            <div class="progress-bar-bg">
-                <div id="progress-fill" class="progress-bar-fill"></div>
-            </div>
+    <!-- Dashboard HUD -->
+    <div class="dashboard-hud">
+        <div class="hud-widget">👤 GRADO PROFILO<span id="profile-rank" class="widget-val">RECLUTA</span></div>
+        <div class="hud-widget">⭐ ESPERIENZA<span id="profile-xp" class="widget-val" style="color:var(--neon-blue);">0 XP</span></div>
+        <div class="hud-widget">🏆 RECORD<span id="global-highscore" class="widget-val">0 / 10</span></div>
+    </div>
+
+    <!-- Barra di avanzamento XP globale tarata su 1 Miliardo -->
+    <div style="background: rgba(15, 23, 42, 0.5); padding: 12px 16px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #334155;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--neon-purple); margin-bottom: 5px;">
+            <span>PROGRESSO LIVELLO GALATTICO</span>
+            <span id="profile-xp-percent">0%</span>
+        </div>
+        <div style="width: 100%; background: #334155; height: 10px; border-radius: 10px; overflow: hidden;">
+            <div id="profile-xp-bar-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-purple), var(--neon-gold)); border-radius: 10px;"></div>
         </div>
     </div>
 
+    <!-- Schermata di ripristino salvataggio -->
+    <div id="resume-screen" class="hidden" style="text-align: center; background: rgba(124, 58, 237, 0.1); border: 1px solid var(--neon-purple); padding: 20px; border-radius: 14px; margin-bottom: 20px;">
+        <span style="font-weight:700; color:var(--neon-purple); display:block; margin-bottom:5px;">💾 ACCESSO RAPIDO SALVATO</span>
+        <span style="font-size:0.9rem; display:block; margin-bottom:15px; color:var(--text-muted);">Riprendi l'ultimo quiz interrotto.</span>
+        <div style="display:flex; gap:10px;">
+            <button class="action-btn" style="margin:0; padding:10px; background:var(--neon-purple);" onclick="resumeGame(true)">RIPRENDI</button>
+            <button class="action-btn" style="margin:0; padding:10px; background:#475569;" onclick="resumeGame(false)">CANCELLA</button>
+        </div>
+    </div>
+    <!-- 1. Schermata Setup Opzioni -->
+    <div id="setup-screen">
+        <div class="copy-box">
+            <button class="copy-btn" onclick="copyPromptToClipboard()">📋 COPIA COMANDO PER L'IA</button>
+        </div>
 
-    <!-- 2. Schermata Svolgimento Quiz -->
+        <div class="file-drop-zone" onclick="document.getElementById('file-loader-input').click()">
+            📁 Clicca qui per caricare direttamente un file .json salvato
+            <input type="file" id="file-loader-input" class="hidden" accept=".json" onchange="handleFileImport(this.files)">
+        </div>
+
+                <textarea id="notes-input" placeholder="Incolla qui il codice JSON..."></textarea>
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="action-btn" style="flex: 1;" onclick="startOfflineQuiz('quiz')">🎮 AVVIA QUIZ</button>
+            <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);" onclick="startOfflineQuiz('flashcard')">🃏 FLASHCARD</button>
+        </div>
+
+        <!-- Bottone grande per navigare all'Arsenale dei Temi -->
+        <button class="action-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onclick="toggleShopView(true)">🛍️ APRI ARSENALE NEGOZIO TEMI</button>
+
+        <!-- Modulo Daily Spin Arcade -->
+        <div id="daily-spin-box" class="subjects-box" style="text-align: center; border-color: var(--neon-gold); background: rgba(245, 158, 11, 0.05); margin-top: 15px;">
+            <div style="font-weight:800; color:var(--neon-gold); text-transform: uppercase; margin-bottom: 5px;">🎰 DAILY BONUS REWARD</div>
+            <span id="spin-status-text" style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:10px;">Estrai il tuo bottino di punti giornaliero gratuito!</span>
+            <button id="spin-btn" class="copy-btn" style="background:var(--neon-gold); color:var(--bg-dark);" onclick="triggerDailySpin()">🎰 GIRA LA RUOTA</button>
+        </div>
+        <!-- Modulo delle Missioni Quotidiane -->
+        <div class="subjects-box" style="border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.02);">
+            <div style="font-weight:800; color:var(--neon-blue); text-align:center; margin-bottom:8px; text-transform:uppercase;">🎯 MISSIONI QUOTIDIANE (DAILY QUESTS)</div>
+            <div class="subject-tag-row"><span>🧠 Mente Lucida <small>(Fai ≤ 2 errori nel test)</small></span> <span id="q1-status">⏳ Incompleta</span></div>
+            <div class="subject-tag-row"><span>⚔️ Stacanovista <small>(Studia almeno 2 materie)</small></span> <span id="q2-status">⏳ Incompleta</span></div>
+            <div class="subject-tag-row"><span>🔥 Inarrestabile <small>(Raggiungi una combo x5)</small></span> <span id="q3-status">⏳ Incompleta</span></div>
+        </div>
+
+        <!-- Modulo della Bacheca dei Trofei -->
+        <div class="subjects-box" style="border-color: var(--neon-gold); background: rgba(245, 158, 11, 0.02);">
+            <div style="font-weight:800; color:var(--neon-gold); text-align:center; margin-bottom:8px; text-transform:uppercase;">🏆 BACHECA MEDAGLIERE TROFEI</div>
+            <div class="subject-tag-row"><span>🥇 Perfezione Assoluta <small>(Raggiungi 10/10 in una materia)</small></span> <span id="ach1-status">🔒 Bloccato</span></div>
+            <div class="subject-tag-row"><span>📚 Enciclopedico <small>(Registra 5 materie in Accademia)</small></span> <span id="ach2-status">🔒 Bloccato</span></div>
+            <div class="subject-tag-row"><span>🌌 Alchimista Milionario <small>(Accumula 1.000.000 XP totali)</small></span> <span id="ach3-status">🔒 Bloccato</span></div>
+        </div>
+
+        <div class="subjects-box">
+            <div style="font-weight:800; color:var(--neon-purple); text-align:center; margin-bottom:8px;">📚 ACCADEMIA DELLE MATERIE & RECORD</div>
+            <div id="subjects-list-container">
+                <div style="color:var(--text-muted); text-align:center; font-size:0.8rem;">Nessuna materia registrata. Fai il tuo primo test!</div>
+            </div>
+        </div>
+
+        <button onclick="wipeAllArcadeData()" style="background: transparent; color: #64748b; border: 1px solid #334155; padding: 8px; font-size: 0.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; width: auto; display: block; margin: 20px auto 0 auto;">⚠️ CANCELLA DATI PROFILO</button>
+    </div>
+
+    <!-- 2. SCHERMATA ISOLATA: Arsenale Negozio Temi -->
+    <div id="shop-screen" class="hidden shop-box">
+        <div style="font-weight:800; color:var(--neon-gold); font-size: 1.3rem;">🛍️ ARSENALE DEI 14 TEMI SBLOCCABILI</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">I temi si sbloccano automaticamente raggiungendo i gradi XP richiesti.</p>
+        
+        <div class="theme-grid">
+            <button class="theme-select-btn" onclick="changeTheme('cyber')">Blue Cyber (0 XP)</button>
+            <button id="shop-btn-veterano" class="theme-select-btn locked" onclick="changeTheme('veterano')">Veterano (4k XP)</button>
+            <button id="shop-btn-suprema" class="theme-select-btn locked" onclick="changeTheme('suprema')">Intelligenza Suprema (8k XP)</button>
+            <button id="shop-btn-pazzo" class="theme-select-btn locked" onclick="changeTheme('pazzo')">Scienziato Pazzo (15k XP)</button>
+            <button id="shop-btn-master" class="theme-select-btn locked" onclick="changeTheme('master')">Master Copia-Incolla (30k XP)</button>
+            <button id="shop-btn-divina" class="theme-select-btn locked" onclick="changeTheme('divina')">Divinità dello Studio (50k XP)</button>
+            <button id="shop-btn-enciclo" class="theme-select-btn locked" onclick="changeTheme('enciclo')">Enciclopedia Vivente (100k XP)</button>
+            <button id="shop-btn-architeto" class="theme-select-btn locked" onclick="changeTheme('architeto')">Architetto del Sapere (250k XP)</button>
+            <button id="shop-btn-filosofo" class="theme-select-btn locked" onclick="changeTheme('filosofo')">Filosofo Immantale (500k XP)</button>
+            <button id="shop-btn-alieni" class="theme-select-btn locked" onclick="changeTheme('alieni')">Intelligenza Alieni (1M XP)</button>
+            <button id="shop-btn-reassoluto" class="theme-select-btn locked" onclick="changeTheme('reassoluto')">Re del Copia-Incolla (10M XP)</button>
+            <button id="shop-btn-interstel" class="theme-select-btn locked" onclick="changeTheme('interstel')">Entità Interstellare (100M XP)</button>
+            <button id="shop-btn-creatore" class="theme-select-btn locked" onclick="changeTheme('creatore')">Creatore di Mondi (500M XP)</button>
+            <button id="shop-btn-cosmica" class="theme-select-btn locked" onclick="changeTheme('cosmica')">Singolarità Cosmica (1B XP)</button>
+        </div>
+        
+        <button class="action-btn" style="background: #334155; margin-top: 20px;" onclick="toggleShopView(false)">◀ TORNA ALLA HOME</button>
+    </div>
+    <!-- 3. Schermata Modalità Allenamento Flashcard -->
+    <div id="flashcard-screen" class="hidden">
+        <div class="progress-hud">
+            <span id="flash-hud-index">CARTA 1</span>
+            <span style="color: var(--neon-purple);">📚 MODALITÀ STUDIO</span>
+        </div>
+        <div id="flashcard-element" class="flashcard-card" onclick="flipFlashcard()">Testo Carta</div>
+        <div class="flashcard-controls">
+            <button class="action-btn" style="margin: 0; padding: 12px; width: 45%; background: #334155;" onclick="prevFlashcard()">◀ INDIETRO</button>
+            <button class="action-btn" style="margin: 0; padding: 12px; width: 45%;" onclick="nextFlashcard()">AVANTI ▶</button>
+        </div>
+        <button class="action-btn" style="background: #b91c1c; margin-top: 20px;" onclick="exitFlashcards()">❌ ESCI E AVVIA QUIZ</button>
+    </div>
+
+    <!-- 4. Schermata Quiz Giocabile -->
     <div id="quiz-screen" class="hidden">
+        <div class="progress-hud">
+            <span id="hud-current">STAGE 1</span>
+            <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+            <span id="hud-score">SCORE: 0</span>
+            <span id="hud-streak" class="streak-badge hidden">COMBO x1</span>
+        </div>
+
         <h2 id="question-text">Domanda</h2>
         <ul id="options-container" class="options-list"></ul>
         
@@ -133,19 +293,36 @@
         </div>
         
         <div id="feedback-text" class="feedback"></div>
-        <button id="next-btn" class="hidden" onclick="nextQuestion()">Prossima Domanda</button>
+        <button id="next-btn" class="hidden action-btn" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
     </div>
 
-    <!-- 3. Schermata dei Risultati -->
+    <!-- 5. Schermata Risultati -->
     <div id="result-screen" class="hidden">
-        <h2>🎉 Quiz Completato!</h2>
-        <p class="score">Punteggio finale: <span id="final-score">0</span> / 10</p>
-        <div id="evaluation-text" style="font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0;"></div>
-        <button onclick="resetQuiz()">Inizia un altro quiz</button>
+        <h2>🏆 CLASSIFICA FINALE 🏆</h2>
+        <p class="score" style="text-align: center; font-size: 1.3rem;">Punteggio Finale: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>
+        <div id="evaluation-text" style="font-size: 1.4rem; font-weight:800; margin-bottom:10px; text-align:center;"></div>
+        <div id="new-record-text" style="font-size: 1.2rem; font-weight: 800; color: #f59e0b; text-align: center; margin-bottom: 15px;" class="hidden">🔥 NUOVO RECORD ASSOLUTO BATTUTO! 🔥</div>
+        
+        <div id="error-log-container" class="hidden">
+            <div style="font-weight: 700; color: var(--neon-red); font-size: 0.95rem; margin-top: 15px; text-transform: uppercase; text-align: center;">🎯 REGISTRO REPLAY DEGLI ERRORI</div>
+            <div id="error-log-list" class="error-log-box"></div>
+        </div>
+        
+        <div style="display:flex; gap:10px;">
+            <button class="action-btn" style="flex:1; background:#0284c7;" onclick="exportQuizReport()">🔗 CONDIVIDI RISULTATI</button>
+            <button class="action-btn" style="flex:1;" onclick="resetQuiz()">🔄 GIOCA ANCORA</button>
+        </div>
     </div>
 </div>
-
-<!-- LIBRERIA WEBLLM DA CDN (Moduli moderni di tipo script) -->
-<script type="module" src="quiz.js"></script>
+<script src="quiz.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker registrato con successo!', reg))
+        .catch((err) => console.error('Errore di registrazione:', err));
+    });
+  }
+</script>
 </body>
 </html>
