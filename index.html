@@ -157,25 +157,14 @@
     <h1>⚡ NoteQuiz Arcade ⚡</h1>
     <p class="subtitle">Distruggi i test, accumula combo e sblocca ricompense</p>
     
-    <!-- Dashboard HUD -->
+    
     <div class="dashboard-hud">
         <div class="hud-widget">👤 GRADO PROFILO<span id="profile-rank" class="widget-val">RECLUTA</span></div>
         <div class="hud-widget">⭐ ESPERIENZA<span id="profile-xp" class="widget-val" style="color:var(--neon-blue);">0 XP</span></div>
         <div class="hud-widget">🏆 RECORD<span id="global-highscore" class="widget-val">0 / 10</span></div>
     </div>
 
-    <!-- Barra di avanzamento XP globale tarata su 1 Miliardo -->
-    <div style="background: rgba(15, 23, 42, 0.5); padding: 12px 16px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #334155;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--neon-purple); margin-bottom: 5px;">
-            <span>PROGRESSO LIVELLO GALATTICO</span>
-            <span id="profile-xp-percent">0%</span>
-        </div>
-        <div style="width: 100%; background: #334155; height: 10px; border-radius: 10px; overflow: hidden;">
-            <div id="profile-xp-bar-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-purple), var(--neon-gold)); border-radius: 10px;"></div>
-        </div>
-    </div>
-
-    <!-- Schermata di ripristino salvataggio -->
+    
     <div id="resume-screen" class="hidden" style="text-align: center; background: rgba(124, 58, 237, 0.1); border: 1px solid var(--neon-purple); padding: 20px; border-radius: 14px; margin-bottom: 20px;">
         <span style="font-weight:700; color:var(--neon-purple); display:block; margin-bottom:5px;">💾 ACCESSO RAPIDO SALVATO</span>
         <span style="font-size:0.9rem; display:block; margin-bottom:15px; color:var(--text-muted);">Riprendi l'ultimo quiz interrotto.</span>
@@ -184,7 +173,7 @@
             <button class="action-btn" style="margin:0; padding:10px; background:#475569;" onclick="resumeGame(false)">CANCELLA</button>
         </div>
     </div>
-    <!-- 1. Schermata Setup Opzioni -->
+    
     <div id="setup-screen">
         <div class="copy-box">
             <button class="copy-btn" onclick="copyPromptToClipboard()">📋 COPIA COMANDO PER L'IA</button>
@@ -202,16 +191,16 @@
             <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);" onclick="startOfflineQuiz('flashcard')">🃏 FLASHCARD</button>
         </div>
 
-        <!-- Bottone grande per navigare all'Arsenale dei Temi -->
+        
         <button class="action-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onclick="toggleShopView(true)">🛍️ APRI ARSENALE NEGOZIO TEMI</button>
 
-        <!-- Modulo Daily Spin Arcade -->
+        
         <div id="daily-spin-box" class="subjects-box" style="text-align: center; border-color: var(--neon-gold); background: rgba(245, 158, 11, 0.05); margin-top: 15px;">
             <div style="font-weight:800; color:var(--neon-gold); text-transform: uppercase; margin-bottom: 5px;">🎰 DAILY BONUS REWARD</div>
             <span id="spin-status-text" style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:10px;">Estrai il tuo bottino di punti giornaliero gratuito!</span>
             <button id="spin-btn" class="copy-btn" style="background:var(--neon-gold); color:var(--bg-dark);" onclick="triggerDailySpin()">🎰 GIRA LA RUOTA</button>
         </div>
-        <!-- Modulo delle Missioni Quotidiane -->
+        
         <div class="subjects-box" style="border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.02);">
             <div style="font-weight:800; color:var(--neon-blue); text-align:center; margin-bottom:8px; text-transform:uppercase;">🎯 MISSIONI QUOTIDIANE (DAILY QUESTS)</div>
             <div class="subject-tag-row"><span>🧠 Mente Lucida <small>(Fai ≤ 2 errori nel test)</small></span> <span id="q1-status">⏳ Incompleta</span></div>
@@ -219,7 +208,7 @@
             <div class="subject-tag-row"><span>🔥 Inarrestabile <small>(Raggiungi una combo x5)</small></span> <span id="q3-status">⏳ Incompleta</span></div>
         </div>
 
-        <!-- Modulo della Bacheca dei Trofei -->
+        
         <div class="subjects-box" style="border-color: var(--neon-gold); background: rgba(245, 158, 11, 0.02);">
             <div style="font-weight:800; color:var(--neon-gold); text-align:center; margin-bottom:8px; text-transform:uppercase;">🏆 BACHECA MEDAGLIERE TROFEI</div>
             <div class="subject-tag-row"><span>🥇 Perfezione Assoluta <small>(Raggiungi 10/10 in una materia)</small></span> <span id="ach1-status">🔒 Bloccato</span></div>
@@ -237,7 +226,7 @@
         <button onclick="wipeAllArcadeData()" style="background: transparent; color: #64748b; border: 1px solid #334155; padding: 8px; font-size: 0.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; width: auto; display: block; margin: 20px auto 0 auto;">⚠️ CANCELLA DATI PROFILO</button>
     </div>
 
-    <!-- 2. SCHERMATA ISOLATA: Arsenale Negozio Temi -->
+    
     <div id="shop-screen" class="hidden shop-box">
         <div style="font-weight:800; color:var(--neon-gold); font-size: 1.3rem;">🛍️ ARSENALE DEI 14 TEMI SBLOCCABILI</div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">I temi si sbloccano automaticamente raggiungendo i gradi XP richiesti.</p>
@@ -261,7 +250,7 @@
         
         <button class="action-btn" style="background: #334155; margin-top: 20px;" onclick="toggleShopView(false)">◀ TORNA ALLA HOME</button>
     </div>
-    <!-- 3. Schermata Modalità Allenamento Flashcard -->
+    
     <div id="flashcard-screen" class="hidden">
         <div class="progress-hud">
             <span id="flash-hud-index">CARTA 1</span>
@@ -275,28 +264,7 @@
         <button class="action-btn" style="background: #b91c1c; margin-top: 20px;" onclick="exitFlashcards()">❌ ESCI E AVVIA QUIZ</button>
     </div>
 
-    <!-- 4. Schermata Quiz Giocabile -->
-    <div id="quiz-screen" class="hidden">
-        <div class="progress-hud">
-            <span id="hud-current">STAGE 1</span>
-            <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
-            <span id="hud-score">SCORE: 0</span>
-            <span id="hud-streak" class="streak-badge hidden">COMBO x1</span>
-        </div>
-
-        <h2 id="question-text">Domanda</h2>
-        <ul id="options-container" class="options-list"></ul>
-        
-        <div id="tf-container" class="tf-container hidden">
-            <div id="btn-vero" class="option-btn" onclick="checkTrueFalse('Vero')">VERO</div>
-            <div id="btn-falso" class="option-btn" onclick="checkTrueFalse('Falso')">FALSO</div>
-        </div>
-        
-        <div id="feedback-text" class="feedback"></div>
-        <button id="next-btn" class="hidden action-btn" onclick="nextQuestion()">PROSSIMO LIVELLO ➔</button>
-    </div>
-
-    <!-- 5. Schermata Risultati -->
+    
     <div id="result-screen" class="hidden">
         <h2>🏆 CLASSIFICA FINALE 🏆</h2>
         <p class="score" style="text-align: center; font-size: 1.3rem;">Punteggio Finale: <span id="final-score" style="color: var(--neon-blue); font-size: 2rem;">0</span> / <span id="total-questions-hud">10</span></p>

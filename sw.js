@@ -5,7 +5,7 @@ const ASSETS_TO_CACHE = [
   '/quiz.js'
 ];
 
-// 1. Installazione: crea la cache e salva i file
+ 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -15,7 +15,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// 2. Attivazione: elimina le vecchie cache se aggiorni il nome (es. v2_cache)
+ 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -31,7 +31,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// 3. Intercettazione richieste: serve i file dalla cache se sei offline
+ 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

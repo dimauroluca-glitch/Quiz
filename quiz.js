@@ -6,10 +6,10 @@ let wrongAnswersLog = [];
 let isCardFlipped = false;
 let currentQuizSubject = "Generale";
 
-// Nuove variabili per le espansioni
-let gameMode = "quiz"; // "quiz" o "flashcard"
+ 
+let gameMode = "quiz"; 
 
-// ---- MOTORE AUDIO ARCADE NATIVO ----
+ 
 function playArcadeSound(type) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
@@ -30,7 +30,7 @@ function playArcadeSound(type) {
     }
 }
 
-// Gestione dei 14 temi grafici sbloccabili in base agli XP
+ 
 window.changeTheme = function(themeName) {
     const body = document.body;
     const xp = parseInt(localStorage.getItem('arcade_total_xp') || 0);
@@ -92,7 +92,7 @@ window.handleFileImport = function(files) {
     reader.readAsText(file);
 }
 
-// Generatore Ruota della Fortuna Giornaliera
+ 
 window.triggerDailySpin = function() {
     const todayStr = new Date().toDateString();
     const lastSpin = localStorage.getItem('arcade_last_spin_date');
@@ -114,7 +114,7 @@ window.triggerDailySpin = function() {
     localStorage.setItem('arcade_last_spin_date', todayStr);
     refreshProfileXP(randomReward);
     
-    // Avanza anche il contatore di spin per gli Achievement
+    
     let totalSpins = parseInt(localStorage.getItem('ach_total_spins') || 0) + 1;
     localStorage.setItem('ach_total_spins', totalSpins);
     
@@ -133,12 +133,12 @@ function checkDailySpinStatus() {
         if (spinText) spinText.innerHTML = `⚡ Hai già estratto il tuo premio per oggi. Torna domani!`;
     }
 }
-// Gestione del pannello delle 3 Missioni Quotidiane
+ 
 function renderDailyQuests() {
     const todayStr = new Date().toDateString();
     const lastQuestDate = localStorage.getItem('quest_date_reset');
     
-    // Se cambia giorno, rigenera le missioni azzerandole
+    
     if (lastQuestDate !== todayStr) {
         localStorage.setItem('quest_date_reset', todayStr);
         localStorage.setItem('quest_1_done', 'false');
@@ -158,7 +158,7 @@ function renderDailyQuests() {
     document.getElementById('q3-status').style.color = q3 ? "var(--neon-green)" : "var(--text-muted)";
 }
 
-// Gestione della Bacheca dei Trofei Sbloccabili
+ 
 function renderAchievements() {
     const highscore = parseInt(localStorage.getItem('arcade_highscore') || 0);
     const totalXP = parseInt(localStorage.getItem('arcade_total_xp') || 0);
@@ -175,18 +175,18 @@ function renderAchievements() {
     document.getElementById('ach3-status').innerHTML = ach3 ? "🔓 SBLOCCATO (+50000 XP)" : "🔒 Bloccato";
     document.getElementById('ach3-status').style.color = ach3 ? "var(--neon-gold)" : "var(--text-muted)";
     
-    // Controlla ed assegna i premi in XP se sbloccati per la prima volta
+    
     if (ach1 && localStorage.getItem('ach_1_claimed') !== 'true') { localStorage.setItem('ach_1_claimed', 'true'); refreshProfileXP(2000); }
     if (ach2 && localStorage.getItem('ach_2_claimed') !== 'true') { localStorage.setItem('ach_2_claimed', 'true'); refreshProfileXP(5000); }
     if (ach3 && localStorage.getItem('ach_3_claimed') !== 'true') { localStorage.setItem('ach_3_claimed', 'true'); refreshProfileXP(50000); }
 }
 
 function checkGameEndQuestsAndAchievements(finalCorrectCount) {
-    // Avanza la Quest 1 (Mente Lucida: Meno di 2 errori su 10 domande)
+    
     if (questions.length === 10 && (10 - finalCorrectCount) <= 2) {
         if (localStorage.getItem('quest_1_done') !== 'true') { localStorage.setItem('quest_1_done', 'true'); refreshProfileXP(300); }
     }
-    // Avanza la Quest 3 (Inarrestabile: Aver fatto una combo di almeno x5)
+    
     if (localStorage.getItem('quest_3_trigger_session') === 'true') {
         if (localStorage.getItem('quest_3_done') !== 'true') { localStorage.setItem('quest_3_done', 'true'); refreshProfileXP(400); }
     }
@@ -202,7 +202,7 @@ function addSubjectXP(subject, points) {
     subjectsData[safeSubject] += points;
     localStorage.setItem('arcade_subjects_xp', JSON.stringify(subjectsData));
     
-    // Avanza Quest 2 (Stacanovista: Almeno due materie nello storico)
+    
     if (Object.keys(subjectsData).length >= 2) {
         if (localStorage.getItem('quest_2_done') !== 'true') { localStorage.setItem('quest_2_done', 'true'); refreshProfileXP(500); }
     }
@@ -354,7 +354,7 @@ function updateStreakHUD() {
     if (!badge) return;
     if (streak >= 2) { 
         badge.innerText = `COMBO x${streak} 🔥`; badge.classList.remove('hidden'); 
-        if (streak >= 5) localStorage.setItem('quest_3_trigger_session', 'true'); // Attiva trigger per Quest 3
+        if (streak >= 5) localStorage.setItem('quest_3_trigger_session', 'true'); 
     } else { badge.classList.add('hidden'); }
 }
 function showQuestion() {
@@ -367,7 +367,7 @@ function showQuestion() {
     optionsContainer.innerHTML = ''; if (tfContainer) tfContainer.classList.add('hidden');
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
     
-    // Ripristinato l'HUD classico senza icone dei cuori
+    
     document.getElementById('hud-current').innerText = `STAGE ${currentQuestionIndex + 1} / ${questions.length} [${safeSub}]`;
     document.getElementById('hud-score').innerText = `SCORE: ${score * 100}`;
     updateStreakHUD();
@@ -447,14 +447,14 @@ function showResults() {
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     document.getElementById('final-score').innerText = correctAnswersCount;
     
-    // In caso di sconfitta prematura in Survival, adatta l'HUD finale
+    
     document.getElementById('total-questions-hud').innerText = currentQuestionIndex === questions.length ? questions.length : currentQuestionIndex;
     
     const evaluation = getEvaluation(correctAnswersCount, currentQuestionIndex);
     const targetEl = document.getElementById('evaluation-text'); 
     if (targetEl) { targetEl.innerText = evaluation.text; targetEl.style.color = evaluation.color; }
 
-    // Aggiornamento record specifico per materia
+    
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
     let subjectsRecords = JSON.parse(localStorage.getItem('arcade_subjects_records') || "{}");
     let oldRecord = subjectsRecords[safeSub] || 0;
@@ -463,14 +463,14 @@ function showResults() {
         localStorage.setItem('arcade_subjects_records', JSON.stringify(subjectsRecords)); 
     }
 
-    // Cronologia ultimi 5 test
+    
     const history = JSON.parse(localStorage.getItem('arcade_quiz_history') || "[]");
     const today = new Date(); const dateStr = today.getDate() + "/" + (today.getMonth() + 1);
     history.push({ date: dateStr, score: correctAnswersCount, total: questions.length });
     if (history.length > 5) history.shift();
     localStorage.setItem('arcade_quiz_history', JSON.stringify(history));
 
-    // CORRETTO: Sincronizzato l'ID esatto per aggiornare istantaneamente l'HUD in alto a destra
+    
     const currentHighScore = parseInt(localStorage.getItem('arcade_highscore') || 0);
     const recordLabel = document.getElementById('new-record-text');
     
@@ -514,7 +514,7 @@ window.exportQuizReport = function() {
     let correctAnswersCount = questions.length - wrongAnswersLog.length;
     let safeSub = currentQuizSubject ? currentQuizSubject : "Generale";
     
-    // 1. Generazione dell'intestazione del report
+    
     let shareText = `⚡ REPORT DI STUDIO - NOTEQUIZ ARCADE ⚡\n`;
     shareText += `-----------------------------------------\n`;
     shareText += `📚 Materia: ${safeSub}\n`;
@@ -522,7 +522,7 @@ window.exportQuizReport = function() {
     shareText += `🏆 Grado: ${getEvaluation(correctAnswersCount, questions.length).text}\n`;
     shareText += `-----------------------------------------\n\n`;
     
-    // CORRETTO: Ora il codice controlla e concatena gli errori reali al testo di condivisione
+    
     if (wrongAnswersLog.length > 0) {
         shareText += `❌ ELENCO ERRORI DA RIPASSARE:\n\n`;
         wrongAnswersLog.forEach((item, i) => {
@@ -538,7 +538,7 @@ window.exportQuizReport = function() {
         shareText += `🔥 PREPARAZIONE PERFETTA! 🔥\nZero errori commessi. Pronto per la verifica! 🚀\n`;
     }
 
-    // 2. Invio del blocco di testo completo al sistema di condivisione nativo
+    
     if (navigator.share) {
         navigator.share({ 
             title: `Report NoteQuiz - ${safeSub}`, 
@@ -547,7 +547,7 @@ window.exportQuizReport = function() {
         .then(() => console.log('Condivisione riuscita!'))
         .catch((error) => console.log('Errore condivisione:', error));
     } else {
-        // Soluzione di riserva per PC: copia tutto il testo negli appunti
+        
         navigator.clipboard.writeText(shareText).then(() => {
             alert("Il report completo (inclusi gli errori) è stato COPIATO NEGLI APPUNTI! Puoi incollarlo manualmente (Ctrl+V) dove preferisci.");
         }).catch(err => { 
